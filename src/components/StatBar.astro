@@ -1,0 +1,95 @@
+<!-- Stats bar — dark full-width section with 4 key metrics -->
+<section class="w-full" style="background: var(--color-block); padding: 48px 0;">
+  <div id="stat-bar" class="mx-auto grid grid-cols-2 sm:grid-cols-4 gap-y-8" style="max-width: 900px; padding: 0 24px;">
+    <div class="stat-col text-center px-6 sm:border-r" style="border-color: rgba(255,255,255,0.12);">
+      <div class="stat-number opacity-0 translate-y-4" style="font-family: var(--font-display); font-weight: 300; font-size: clamp(40px,5vw,64px); color: white;">
+        <span data-count="10" data-prefix="" data-suffix="+">0+</span>
+      </div>
+      <div class="stat-label opacity-0 translate-y-4" style="font-family: var(--font-body); font-weight: 300; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.45); margin-top: 8px;">
+        Years CPG Design Leadership
+      </div>
+    </div>
+    <div class="stat-col text-center px-6 sm:border-r" style="border-color: rgba(255,255,255,0.12);">
+      <div class="stat-number opacity-0 translate-y-4" style="font-family: var(--font-display); font-weight: 300; font-size: clamp(40px,5vw,64px); color: white;">
+        <span data-count="320" data-prefix="$" data-suffix="M+">$0M+</span>
+      </div>
+      <div class="stat-label opacity-0 translate-y-4" style="font-family: var(--font-body); font-weight: 300; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.45); margin-top: 8px;">
+        Brand Revenue Influenced
+      </div>
+    </div>
+    <div class="stat-col text-center px-6 sm:border-r" style="border-color: rgba(255,255,255,0.12);">
+      <div class="stat-number opacity-0 translate-y-4" style="font-family: var(--font-display); font-weight: 300; font-size: clamp(40px,5vw,64px); color: white;">
+        <span data-count="1" data-prefix="#" data-suffix="">#0</span>
+      </div>
+      <div class="stat-label opacity-0 translate-y-4" style="font-family: var(--font-body); font-weight: 300; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.45); margin-top: 8px;">
+        Dieline Award — Dairy Category
+      </div>
+    </div>
+    <div class="stat-col text-center px-6">
+      <div class="stat-number opacity-0 translate-y-4" style="font-family: var(--font-display); font-weight: 300; font-size: clamp(40px,5vw,64px); color: white;">
+        <span data-count="15" data-prefix="" data-suffix="+">0+</span>
+      </div>
+      <div class="stat-label opacity-0 translate-y-4" style="font-family: var(--font-body); font-weight: 300; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.45); margin-top: 8px;">
+        Brands Launched or Evolved
+      </div>
+    </div>
+  </div>
+</section>
+
+<script is:inline>
+(function() {
+  var statBar = document.getElementById('stat-bar');
+  if (!statBar) return;
+
+  var fired = false;
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting && !fired) {
+        fired = true;
+        observer.unobserve(entry.target);
+
+        /* Fade in stats with stagger */
+        var numbers = statBar.querySelectorAll('.stat-number');
+        var labels = statBar.querySelectorAll('.stat-label');
+        numbers.forEach(function(el, i) {
+          setTimeout(function() {
+            el.style.transition = 'opacity 500ms var(--ease-out), transform 500ms var(--ease-out)';
+            el.style.opacity = '1';
+            el.style.transform = 'translateY(0)';
+          }, i * 100);
+        });
+        labels.forEach(function(el, i) {
+          setTimeout(function() {
+            el.style.transition = 'opacity 500ms var(--ease-out), transform 500ms var(--ease-out)';
+            el.style.opacity = '1';
+            el.style.transform = 'translateY(0)';
+          }, i * 100 + 200);
+        });
+
+        /* Count-up animation */
+        var spans = statBar.querySelectorAll('[data-count]');
+        spans.forEach(function(span) {
+          var target = parseInt(span.getAttribute('data-count'), 10);
+          var prefix = span.getAttribute('data-prefix') || '';
+          var suffix = span.getAttribute('data-suffix') || '';
+          var duration = 800;
+          var start = performance.now();
+
+          function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
+
+          function update(now) {
+            var elapsed = now - start;
+            var progress = Math.min(elapsed / duration, 1);
+            var current = Math.round(easeOut(progress) * target);
+            span.textContent = prefix + current + suffix;
+            if (progress < 1) requestAnimationFrame(update);
+          }
+          requestAnimationFrame(update);
+        });
+      }
+    });
+  }, { threshold: 0.2 });
+
+  observer.observe(statBar);
+})();
+</script>

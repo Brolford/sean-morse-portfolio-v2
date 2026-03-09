@@ -1,0 +1,109 @@
+---
+import { projects } from '../data/projects.js';
+const featured = projects
+  .filter(p => p.featured)
+  .sort((a, b) => (a.spotlightOrder || 99) - (b.spotlightOrder || 99));
+---
+<!-- Full-width spotlight carousel — auto-cycles through featured projects -->
+<section class="spotlight-section relative w-full overflow-hidden" style="height: 62vh; min-height: 420px; max-height: 680px;">
+  <!-- Slides -->
+  <div class="spotlight-slides absolute inset-0">
+    {featured.map((project, i) => (
+      <div
+        class={`spotlight-slide absolute inset-0 transition-opacity duration-500 ease ${i === 0 ? 'opacity-100' : 'opacity-0'}`}
+        data-slug={project.slug}
+        data-title={project.title}
+        data-category={project.category}
+        data-tagline={project.tagline}
+        data-case-study={project.caseStudy}
+      >
+        <div class={`w-full h-full ${project.gradientClass}`}></div>
+      </div>
+    ))}
+  </div>
+
+  <!-- Gradient overlay -->
+  <div class="absolute inset-0" style="background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 55%);"></div>
+
+  <!-- Content overlay -->
+  <div class="absolute bottom-8 left-10 z-10">
+    <div id="spotlight-category" style="font-family: var(--font-body); font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: rgba(255,255,255,0.7);">
+      {featured[0]?.category}
+    </div>
+    <div id="spotlight-title" style="font-family: var(--font-display); font-weight: 300; font-style: italic; font-size: clamp(32px,4vw,56px); color: white; margin-top: 4px;">
+      {featured[0]?.title}
+    </div>
+    <div id="spotlight-tagline" style="font-family: var(--font-body); font-weight: 300; font-size: 15px; color: rgba(255,255,255,0.7); margin-top: 6px;">
+      {featured[0]?.tagline}
+    </div>
+  </div>
+
+  <!-- Progress dots -->
+  <div class="absolute bottom-6 right-8 flex gap-1.5 z-10">
+    {featured.map((_, i) => (
+      <button
+        class={`spotlight-dot w-1.5 h-1.5 rounded-full border-none cursor-pointer transition-colors duration-200 ${i === 0 ? 'bg-white' : ''}`}
+        style={i !== 0 ? 'background: rgba(255,255,255,0.35);' : ''}
+        data-index={i}
+        aria-label={`Go to slide ${i + 1}`}
+      ></button>
+    ))}
+  </div>
+</section>
+
+<script is:inline>
+(function() {
+  var slides = document.querySelectorAll('.spotlight-slide');
+  var dots = document.querySelectorAll('.spotlight-dot');
+  var titleEl = document.getElementById('spotlight-title');
+  var catEl = document.getElementById('spotlight-category');
+  var tagEl = document.getElementById('spotlight-tagline');
+  if (!slides.length) return;
+
+  var current = 0;
+  var total = slides.length;
+
+  function goTo(index) {
+    slides.forEach(function(s, i) {
+      s.style.opacity = i === index ? '1' : '0';
+    });
+    dots.forEach(function(d, i) {
+      d.style.background = i === index ? 'white' : 'rgba(255,255,255,0.35)';
+    });
+    var slide = slides[index];
+    if (titleEl) titleEl.textContent = slide.getAttribute('data-title');
+    if (catEl) catEl.textContent = slide.getAttribute('data-category');
+    if (tagEl) tagEl.textContent = slide.getAttribute('data-tagline');
+    current = index;
+  }
+
+  /* Auto-cycle every 4 seconds */
+  var timer = setInterval(function() {
+    goTo((current + 1) % total);
+  }, 4000);
+
+  /* Dot click */
+  dots.forEach(function(dot) {
+    dot.addEventListener('click', function() {
+      clearInterval(timer);
+      goTo(parseInt(dot.getAttribute('data-index'), 10));
+      timer = setInterval(function() {
+        goTo((current + 1) % total);
+      }, 4000);
+    });
+  });
+
+  /* Click slide to navigate if caseStudy */
+  var section = document.querySelector('.spotlight-section');
+  if (section) {
+    section.style.cursor = 'pointer';
+    section.addEventListener('click', function(e) {
+      if (e.target.closest('.spotlight-dot')) return;
+      var slide = slides[current];
+      if (slide && slide.getAttribute('data-case-study') === 'true') {
+        window.location.hash = '#/project/' + slide.getAttribute('data-slug');
+      }
+    });
+  }
+})();
+</script>

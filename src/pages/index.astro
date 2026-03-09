@@ -1,0 +1,254 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import StatBar from '../components/StatBar.astro';
+import BrandMarquee from '../components/BrandMarquee.astro';
+import SpotlightHero from '../components/SpotlightHero.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import DisciplineTicker from '../components/DisciplineTicker.astro';
+import ContactModal from '../components/ContactModal.astro';
+import { projects } from '../data/projects.js';
+
+/* Map projects by slug for grid layout */
+const bySlug = Object.fromEntries(projects.map(p => [p.slug, p]));
+---
+<Base>
+  <Nav />
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- PAGE: HOME -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <div id="page-home" class="page-view active">
+
+    <!-- HERO -->
+    <section class="min-h-screen flex items-center pt-16" style="padding-left: var(--space-fluid); padding-right: var(--space-fluid);">
+      <div class="w-full mx-auto grid grid-cols-1 md:grid-cols-[55fr_45fr] gap-8 md:gap-12 items-center" style="max-width: 1400px;">
+
+        <!-- Mobile: card first -->
+        <div class="block md:hidden hero-animate" style="transition: opacity 600ms var(--ease-out), transform 600ms var(--ease-out); transition-delay: 200ms;">
+          <div class="relative overflow-hidden rounded" style="aspect-ratio: 3/4;">
+            <div class="gradient-liquid-iv w-full h-full"></div>
+            <div class="absolute bottom-5 left-5" style="font-family: var(--font-display); font-weight: 300; font-style: italic; font-size: 28px; color: white;">
+              Liquid I.V.
+            </div>
+          </div>
+        </div>
+
+        <!-- Left column -->
+        <div>
+          <!-- Overline -->
+          <div class="flex items-center mb-6">
+            <span class="hero-rule inline-block mr-3" style="width: 32px; height: 1px; background: var(--color-muted); transition: transform 600ms var(--ease-out);"></span>
+            <span class="hero-animate" style="font-family: var(--font-body); font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--color-muted); transition: opacity 400ms var(--ease-out), transform 400ms var(--ease-out); transition-delay: 150ms;">
+              Design Director — Portland, OR
+            </span>
+          </div>
+
+          <!-- Headline -->
+          <h1 class="mb-4">
+            <span class="hero-animate block" style="font-family: var(--font-display); font-weight: 300; font-size: var(--text-display-xl); line-height: 1.0; letter-spacing: -0.02em; color: var(--color-text); transition: opacity 500ms var(--ease-out), transform 500ms var(--ease-out); transition-delay: 200ms;">Strategic Design</span>
+            <span class="hero-animate block" style="font-family: var(--font-display); font-weight: 300; font-size: var(--text-display-xl); line-height: 1.0; letter-spacing: -0.02em; color: var(--color-text); transition: opacity 500ms var(--ease-out), transform 500ms var(--ease-out); transition-delay: 280ms;">Meets Visible</span>
+            <span class="hero-animate block" style="font-family: var(--font-display); font-weight: 300; font-size: var(--text-display-xl); line-height: 1.0; letter-spacing: -0.02em; transition: opacity 500ms var(--ease-out), transform 500ms var(--ease-out); transition-delay: 360ms;"><span style="color: var(--color-accent);">Impact.</span></span>
+          </h1>
+
+          <!-- Descriptor -->
+          <p class="hero-animate" style="font-family: var(--font-body); font-weight: 300; font-size: 17px; color: var(--color-muted); max-width: 420px; margin-top: 16px; transition: opacity 400ms var(--ease-out), transform 400ms var(--ease-out); transition-delay: 460ms;">
+            Brand development and packaging design for CPG brands that take their craft seriously.
+          </p>
+
+          <!-- CTA -->
+          <a href="#/work" class="cta-link hero-animate inline-block mt-6" style="font-family: var(--font-body); font-weight: 400; font-size: 14px; color: var(--color-text); transition: opacity 400ms var(--ease-out), transform 400ms var(--ease-out); transition-delay: 560ms;">
+            See the work →
+          </a>
+        </div>
+
+        <!-- Right column (desktop only) -->
+        <div class="hidden md:block hero-animate" style="transition: opacity 600ms var(--ease-out), transform 600ms var(--ease-out); transition-delay: 200ms;">
+          <div class="relative overflow-hidden rounded cursor-pointer" style="aspect-ratio: 3/4; transform: rotate(2.5deg); transition: transform 500ms var(--ease-out);" onmouseenter="this.style.transform='rotate(0deg) scale(1.02)'" onmouseleave="this.style.transform='rotate(2.5deg)'">
+            <div class="gradient-liquid-iv w-full h-full"></div>
+            <div class="absolute bottom-5 left-5" style="font-family: var(--font-display); font-weight: 300; font-style: italic; font-size: 28px; color: white;">
+              Liquid I.V.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STATS BAR -->
+    <StatBar />
+
+    <!-- BRAND MARQUEE -->
+    <BrandMarquee />
+
+    <!-- SPOTLIGHT -->
+    <SpotlightHero />
+
+    <!-- PROJECT GRID -->
+    <section class="py-16" style="padding-left: var(--space-fluid); padding-right: var(--space-fluid);">
+      <div class="mx-auto" style="max-width: 1400px;">
+        <h2 class="animate-up mb-6" style="font-family: var(--font-body); font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--color-muted);">Selected Work</h2>
+
+        <!-- Main grid -->
+        <div class="project-grid" style="display: grid; grid-template-columns: 3fr 2fr; gap: 12px;">
+          <div class="animate-up" data-delay="1" style="grid-column: 1 / -1; height: 500px;">
+            <ProjectCard project={bySlug['liquid-iv']} cardClass="w-full h-full" />
+          </div>
+          <div class="animate-up" data-delay="1" style="grid-column: 1 / 2; height: 420px;">
+            <ProjectCard project={bySlug['leisure-project']} cardClass="w-full h-full" />
+          </div>
+          <div class="animate-up" data-delay="2" style="grid-column: 2 / 3; height: 420px;">
+            <ProjectCard project={bySlug['alecs-ice-cream']} cardClass="w-full h-full" />
+          </div>
+          <div class="animate-up" data-delay="1" style="grid-column: 2 / 3; height: 420px;">
+            <ProjectCard project={bySlug['v8']} cardClass="w-full h-full" />
+          </div>
+          <div class="animate-up" data-delay="2" style="grid-column: 1 / 2; height: 420px;">
+            <ProjectCard project={bySlug['elenita-mezcal']} cardClass="w-full h-full" />
+          </div>
+          <div class="animate-up" data-delay="1" style="grid-column: 1 / -1; height: 340px;">
+            <ProjectCard project={bySlug['coming-soon']} cardClass="w-full h-full" />
+          </div>
+        </div>
+
+        <!-- Lower grid -->
+        <div class="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div class="animate-up" data-delay="1" style="height: 380px;">
+            <ProjectCard project={bySlug['over-easy']} cardClass="w-full h-full" />
+          </div>
+          <div class="animate-up" data-delay="2" style="height: 380px;">
+            <ProjectCard project={bySlug['mimio']} cardClass="w-full h-full" />
+          </div>
+          <div class="animate-up" data-delay="3" style="height: 380px;">
+            <div class="w-full h-full rounded flex items-center justify-center" style="background: var(--color-divider);">
+              <span style="font-family: var(--font-display); font-weight: 300; font-style: italic; font-size: 18px; color: var(--color-muted);">More coming</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DISCIPLINE TICKER -->
+    <DisciplineTicker />
+
+    <!-- WORK CTA -->
+    <section class="w-full" style="background: var(--color-block); padding: 96px 24px;">
+      <div class="mx-auto text-center" style="max-width: 600px;">
+        <h2 class="animate-up" style="font-family: var(--font-display); font-weight: 300; font-style: italic; font-size: clamp(28px,3.5vw,48px); color: white; line-height: 1.2;">
+          Sean partners with brands that take their craft seriously.
+        </h2>
+        <button class="animate-up mt-10 work-cta-btn transition-all duration-250 cursor-pointer" data-delay="1" style="border: 1px solid rgba(255,255,255,0.4); color: white; padding: 14px 40px; border-radius: 2px; font-family: var(--font-body); font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; background: transparent;" onclick="if(typeof openContactModal==='function')openContactModal()">
+          Get in touch
+        </button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- PAGE: WORK / ARCHIVE -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <div id="page-work" class="page-view">
+    <section class="mx-auto pt-32 pb-24 px-6" style="max-width: 1200px;">
+      <h1 class="animate-up mb-16" style="font-family: var(--font-display); font-weight: 300; font-size: clamp(48px,7vw,100px); color: var(--color-text);">Archive</h1>
+
+      <div class="archive-list">
+        {projects.map((project, i) => (
+          <div
+            class={`archive-row animate-up flex justify-between items-baseline py-5 transition-colors duration-200 ${project.caseStudy ? 'cursor-pointer' : ''}`}
+            style="border-bottom: 1px solid var(--color-divider);"
+            data-delay={String(Math.min(i + 1, 8))}
+            data-slug={project.slug}
+            data-case-study={String(project.caseStudy)}
+          >
+            <span class="shrink-0" style="font-family: var(--font-display); font-weight: 300; font-style: italic; font-size: 14px; color: var(--color-muted); min-width: 36px;">
+              {String(i + 1).padStart(2, '0')}
+            </span>
+            <span class="archive-name flex-1 mx-4 transition-colors duration-250" style="font-family: var(--font-display); font-weight: 300; font-style: italic; font-size: clamp(20px,2.5vw,34px); color: var(--color-text);">
+              {project.title}
+            </span>
+            <span class="hidden sm:inline shrink-0 mx-4" style="font-family: var(--font-body); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-muted);">
+              {project.category}
+            </span>
+            <span class="shrink-0" style="font-family: var(--font-body); font-size: 13px; color: var(--color-muted);">
+              {project.year}
+            </span>
+          </div>
+        ))}
+      </div>
+    </section>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- PAGE: ABOUT -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <div id="page-about" class="page-view">
+    <section class="mx-auto px-6" style="max-width: 680px; padding-top: 120px; padding-bottom: 96px;">
+      <h1 class="animate-up mb-12" style="font-family: var(--font-display); font-weight: 300; font-style: italic; font-size: var(--text-display-lg); color: var(--color-text);">
+        Designing brands that move people.
+      </h1>
+
+      <div class="animate-up gradient-over-easy w-full rounded mb-12" data-delay="1" style="aspect-ratio: 4/3;"></div>
+
+      <div class="animate-up" data-delay="2">
+        <p class="mb-6" style="font-family: var(--font-body); font-weight: 300; font-size: 18px; line-height: 1.8;">
+          Sean Morse is a Design Director based in Portland, Oregon, whose decade-plus journey in design traverses diverse industry landscapes. He thrives at the intersection of strategic insight and visual craftsmanship, elevating brands while inspiring the teams he collaborates with.
+        </p>
+        <p class="mb-6" style="font-family: var(--font-body); font-weight: 300; font-size: 18px; line-height: 1.8;">
+          With a particular affinity for CPG, Sean spent over seven years at Hatch SF translating complex strategies into compelling design narratives. There, he orchestrated award-winning work for brands including V8, Liquid I.V., Alec's Ice Cream, SmartyPants, Gimme, Joolies, Dream Pops, Elenita, and countless others, helping each find its distinct voice in their respective markets.
+        </p>
+        <p class="mb-6" style="font-family: var(--font-body); font-weight: 300; font-size: 18px; line-height: 1.8;">
+          Beyond his agency work, Sean selectively pursues freelance projects that spark his curiosity. Most recently, he partnered with Leisure Project, a breakthrough hydration beverage, providing comprehensive brand development from foundation to final packaging.
+        </p>
+      </div>
+
+      <div class="animate-up rounded-r" data-delay="3" style="background: var(--color-accent-muted); border-left: 3px solid var(--color-accent); padding: 20px 24px; border-radius: 0 4px 4px 0; margin: 48px 0;">
+        <p style="font-family: var(--font-body); font-weight: 300; font-size: 16px; font-style: italic; color: var(--color-text);">
+          He is co-founder of Picture Day, a mental wellness tea brand built on the belief that design has the power to nurture positive change and elevate the human experience.
+        </p>
+      </div>
+
+      <div class="animate-up" data-delay="4">
+        <div class="flex justify-between items-baseline py-4" style="border-bottom: 1px solid var(--color-divider);">
+          <span style="font-family: var(--font-display); font-weight: 300; font-size: 40px; color: var(--color-accent);">10+</span>
+          <span style="font-family: var(--font-body); font-weight: 300; font-size: 14px; color: var(--color-muted);">Years of Design Leadership</span>
+        </div>
+        <div class="flex justify-between items-baseline py-4" style="border-bottom: 1px solid var(--color-divider);">
+          <span style="font-family: var(--font-display); font-weight: 300; font-size: 40px; color: var(--color-accent);">$320M+</span>
+          <span style="font-family: var(--font-body); font-weight: 300; font-size: 14px; color: var(--color-muted);">Brand Revenue Influenced</span>
+        </div>
+        <div class="flex justify-between items-baseline py-4" style="border-bottom: 1px solid var(--color-divider);">
+          <span style="font-family: var(--font-display); font-weight: 300; font-size: 40px; color: var(--color-accent);">#1</span>
+          <span style="font-family: var(--font-body); font-weight: 300; font-size: 14px; color: var(--color-muted);">Dieline Award — Dairy Category, 2023</span>
+        </div>
+        <div class="flex justify-between items-baseline py-4" style="border-bottom: 1px solid var(--color-divider);">
+          <span style="font-family: var(--font-display); font-weight: 300; font-size: 40px; color: var(--color-accent);">15+</span>
+          <span style="font-family: var(--font-body); font-weight: 300; font-size: 14px; color: var(--color-muted);">Brands Launched or Evolved</span>
+        </div>
+      </div>
+
+      <div class="animate-up mt-16 text-center" data-delay="5">
+        <p style="font-family: var(--font-body); font-size: 17px; color: var(--color-muted); margin-bottom: 8px;">Have a project in mind?</p>
+        <button class="cta-link bg-transparent border-none cursor-pointer about-contact-btn" style="font-family: var(--font-body); font-weight: 400; font-size: 15px; color: var(--color-text);" onclick="if(typeof openContactModal==='function')openContactModal()">
+          Get in touch →
+        </button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- PAGE: PROJECT DETAIL (placeholder) -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <div id="page-project" class="page-view">
+    <section class="mx-auto px-6" style="max-width: 800px; padding-top: 120px; padding-bottom: 96px;">
+      <a href="#/work" class="inline-block mb-8" style="font-family: var(--font-body); font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-muted);">← Back to Archive</a>
+      <div id="project-detail-gradient" class="w-full rounded mb-8" style="aspect-ratio: 16/9;"></div>
+      <h1 id="project-detail-title" style="font-family: var(--font-display); font-weight: 300; font-style: italic; font-size: var(--text-display-md); color: var(--color-text); margin-bottom: 8px;"></h1>
+      <p id="project-detail-category" style="font-family: var(--font-body); font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--color-muted); margin-bottom: 4px;"></p>
+      <p id="project-detail-year" style="font-family: var(--font-body); font-size: 13px; color: var(--color-muted); margin-bottom: 24px;"></p>
+      <p id="project-detail-tagline" style="font-family: var(--font-body); font-weight: 300; font-size: 18px; line-height: 1.8; color: var(--color-text);">Case study coming soon.</p>
+    </section>
+  </div>
+
+  <Footer />
+  <ContactModal />
+</Base>

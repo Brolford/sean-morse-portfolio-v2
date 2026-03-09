@@ -1,0 +1,123 @@
+<!-- Fixed navigation bar with scroll behavior and mobile hamburger -->
+<nav id="main-nav" class="fixed top-0 left-0 right-0 z-[100] h-16 flex items-center justify-between transition-all duration-300" style="padding: 0 var(--space-fluid);">
+  <!-- Logo -->
+  <a href="#/" class="nav-logo" style="font-family: var(--font-display); font-weight: 300; font-size: 18px; color: var(--color-text);">
+    Sean Morse
+  </a>
+
+  <!-- Desktop Links -->
+  <div class="hidden md:flex items-center gap-8">
+    <a href="#/work" class="nav-link" style="font-family: var(--font-body); font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-text); transition: color 200ms;">Work</a>
+    <a href="#/work" class="nav-link" style="font-family: var(--font-body); font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-text); transition: color 200ms;">Archive</a>
+    <a href="#/about" class="nav-link" style="font-family: var(--font-body); font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-text); transition: color 200ms;">About</a>
+    <button id="nav-contact-btn" class="nav-link" style="font-family: var(--font-body); font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-text); background: none; border: none; transition: color 200ms;">Contact</button>
+  </div>
+
+  <!-- Mobile Hamburger -->
+  <button id="hamburger-btn" class="md:hidden flex flex-col justify-center items-center gap-[5px] w-10 h-10 bg-transparent border-none" aria-label="Open menu">
+    <span class="hamburger-line block w-5 h-px transition-all duration-300" style="background: var(--color-text);"></span>
+    <span class="hamburger-line block w-5 h-px transition-all duration-300" style="background: var(--color-text);"></span>
+    <span class="hamburger-line block w-5 h-px transition-all duration-300" style="background: var(--color-text);"></span>
+  </button>
+</nav>
+
+<!-- Mobile Overlay -->
+<div id="mobile-overlay" class="fixed inset-0 z-[200] flex flex-col items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300" style="background: var(--color-bg);">
+  <button id="mobile-close-btn" class="absolute top-5 right-5 w-10 h-10 flex items-center justify-center bg-transparent border-none" style="font-family: var(--font-body); font-size: 24px; color: var(--color-muted);" aria-label="Close menu">×</button>
+
+  <a href="#/" class="mobile-nav-link opacity-0 translate-y-4 transition-all duration-300" style="font-family: var(--font-display); font-weight: 300; font-style: italic; font-size: 48px; color: var(--color-text); margin-bottom: 16px;">Home</a>
+  <a href="#/work" class="mobile-nav-link opacity-0 translate-y-4 transition-all duration-300" style="font-family: var(--font-display); font-weight: 300; font-style: italic; font-size: 48px; color: var(--color-text); margin-bottom: 16px;">Work</a>
+  <a href="#/about" class="mobile-nav-link opacity-0 translate-y-4 transition-all duration-300" style="font-family: var(--font-display); font-weight: 300; font-style: italic; font-size: 48px; color: var(--color-text); margin-bottom: 16px;">About</a>
+  <button class="mobile-nav-link mobile-contact-btn opacity-0 translate-y-4 transition-all duration-300 bg-transparent border-none cursor-pointer" style="font-family: var(--font-display); font-weight: 300; font-style: italic; font-size: 48px; color: var(--color-text);">Contact</button>
+</div>
+
+<script is:inline>
+(function() {
+  const nav = document.getElementById('main-nav');
+  const hamburger = document.getElementById('hamburger-btn');
+  const overlay = document.getElementById('mobile-overlay');
+  const closeBtn = document.getElementById('mobile-close-btn');
+  const mobileLinks = overlay.querySelectorAll('.mobile-nav-link');
+  const navLinks = document.querySelectorAll('.nav-link');
+  const contactBtn = document.getElementById('nav-contact-btn');
+  const mobileContactBtn = overlay.querySelector('.mobile-contact-btn');
+
+  /* Scroll behavior — transparent → solid after 80px */
+  let scrolled = false;
+  function checkScroll() {
+    const shouldBeScrolled = window.scrollY > 80;
+    if (shouldBeScrolled !== scrolled) {
+      scrolled = shouldBeScrolled;
+      if (scrolled) {
+        nav.style.background = 'var(--color-bg)';
+        nav.style.backdropFilter = 'blur(12px)';
+        nav.style.WebkitBackdropFilter = 'blur(12px)';
+        nav.style.borderBottom = '1px solid var(--color-divider)';
+      } else {
+        nav.style.background = 'transparent';
+        nav.style.backdropFilter = 'none';
+        nav.style.WebkitBackdropFilter = 'none';
+        nav.style.borderBottom = '1px solid transparent';
+      }
+    }
+  }
+  window.addEventListener('scroll', checkScroll, { passive: true });
+  checkScroll();
+
+  /* Active page highlight */
+  function updateActiveNav() {
+    const hash = window.location.hash || '#/';
+    navLinks.forEach(function(link) {
+      var href = link.getAttribute('href');
+      if (!href) return;
+      if (href === hash || (hash === '#/' && href === '#/')) {
+        link.style.color = 'var(--color-accent)';
+      } else {
+        link.style.color = 'var(--color-text)';
+      }
+    });
+  }
+  window.addEventListener('hashchange', updateActiveNav);
+  updateActiveNav();
+
+  /* Mobile overlay open/close */
+  function openMobile() {
+    overlay.style.pointerEvents = 'auto';
+    overlay.style.opacity = '1';
+    mobileLinks.forEach(function(link, i) {
+      setTimeout(function() {
+        link.style.opacity = '1';
+        link.style.transform = 'translateY(0)';
+      }, i * 80);
+    });
+    document.body.style.overflow = 'hidden';
+  }
+  function closeMobile() {
+    overlay.style.opacity = '0';
+    overlay.style.pointerEvents = 'none';
+    mobileLinks.forEach(function(link) {
+      link.style.opacity = '0';
+      link.style.transform = 'translateY(16px)';
+    });
+    document.body.style.overflow = '';
+  }
+  hamburger.addEventListener('click', openMobile);
+  closeBtn.addEventListener('click', closeMobile);
+  mobileLinks.forEach(function(link) {
+    if (!link.classList.contains('mobile-contact-btn')) {
+      link.addEventListener('click', closeMobile);
+    }
+  });
+
+  /* Contact modal triggers */
+  contactBtn.addEventListener('click', function() {
+    if (typeof window.openContactModal === 'function') window.openContactModal();
+  });
+  mobileContactBtn.addEventListener('click', function() {
+    closeMobile();
+    setTimeout(function() {
+      if (typeof window.openContactModal === 'function') window.openContactModal();
+    }, 300);
+  });
+})();
+</script>
