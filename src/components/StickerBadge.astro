@@ -1,0 +1,133 @@
+---
+/**
+ * StickerBadge — circular sticker with rotating edge text and center stat.
+ * Props:
+ *   edgeText   – text repeated around the circle edge (e.g. "LIQUID I.V.")
+ *   statNumber – big center number (e.g. "+550")
+ *   statLabel  – smaller text below the number (e.g. "locations launched")
+ *   size       – pixel diameter (default 110)
+ */
+const {
+  edgeText = 'LIQUID I.V.',
+  statNumber = '+550',
+  statLabel = 'locations launched',
+  size = 110,
+} = Astro.props;
+
+/* Build repeated edge string with bullet separators */
+const edgeString = `${edgeText} · ${edgeText} · ${edgeText} · `;
+---
+
+<div class="sticker-badge" style={`width: ${size}px; height: ${size}px;`}>
+  <!-- Rotating ring of text -->
+  <svg class="sticker-ring" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <path id="circlePath" d="M 100, 100 m -72, 0 a 72,72 0 1,1 144,0 a 72,72 0 1,1 -144,0" />
+    </defs>
+    <text>
+      <textPath href="#circlePath" style="font-family: var(--font-body); font-size: 15px; font-weight: 500; letter-spacing: 0.08em; fill: white;">
+        {edgeString}
+      </textPath>
+    </text>
+  </svg>
+
+  <!-- Center content -->
+  <div class="sticker-center">
+    <span class="sticker-number">{statNumber}</span>
+    <span class="sticker-label">{statLabel}</span>
+  </div>
+</div>
+
+<style>
+  .sticker-badge {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    z-index: 10;
+    border-radius: 50%;
+    background: var(--color-block);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: rotate(-12deg);
+    transition: transform 400ms var(--ease-out);
+    cursor: default;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  }
+
+  /* Hover: wobble + scale */
+  .sticker-badge:hover {
+    transform: rotate(0deg) scale(1.12);
+  }
+
+  /* Rotating SVG ring */
+  .sticker-ring {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    animation: spin-slow 12s linear infinite;
+  }
+
+  @keyframes spin-slow {
+    to { transform: rotate(360deg); }
+  }
+
+  /* Pause spin, resume on card hover */
+  .project-card:not(:hover) .sticker-ring {
+    animation-play-state: paused;
+  }
+  .project-card:hover .sticker-ring {
+    animation-play-state: running;
+  }
+
+  /* Center text stack */
+  .sticker-center {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  .sticker-number {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 22px;
+    color: white;
+    letter-spacing: -0.02em;
+  }
+
+  .sticker-label {
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-size: 7.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: rgba(255, 255, 255, 0.85);
+    margin-top: 2px;
+    text-align: center;
+    max-width: 60px;
+  }
+
+  /* Responsive: shrink on small screens */
+  @media (max-width: 640px) {
+    .sticker-badge {
+      width: 80px !important;
+      height: 80px !important;
+      top: 10px;
+      left: 10px;
+    }
+    .sticker-number { font-size: 17px; }
+    .sticker-label { font-size: 6px; max-width: 48px; }
+    .sticker-ring text { font-size: 12px; }
+  }
+
+  /* Respect reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .sticker-ring { animation: none; }
+    .sticker-badge { transition: none; }
+  }
+</style>

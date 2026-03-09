@@ -8,6 +8,7 @@ import SpotlightHero from '../components/SpotlightHero.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import DisciplineTicker from '../components/DisciplineTicker.astro';
 import ContactModal from '../components/ContactModal.astro';
+import StickerBadge from '../components/StickerBadge.astro';
 import { projects } from '../data/projects.js';
 
 /* Map projects by slug for grid layout */
@@ -81,8 +82,9 @@ const bySlug = Object.fromEntries(projects.map(p => [p.slug, p]));
 
         <!-- Main grid -->
         <div class="project-grid">
-          <div class="animate-up grid-span-full" data-delay="1" style="height: 500px;">
+          <div class="animate-up grid-span-full relative" data-delay="1" style="height: 500px;">
             <ProjectCard project={bySlug['liquid-iv']} cardClass="w-full h-full" />
+            <StickerBadge edgeText="LIQUID I.V." statNumber="+550" statLabel="locations launched" size={110} />
           </div>
           <div class="animate-up grid-col-1" data-delay="1" style="height: 420px;">
             <ProjectCard project={bySlug['leisure-project']} cardClass="w-full h-full" />
