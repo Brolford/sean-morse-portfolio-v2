@@ -26,7 +26,7 @@ const featured = projects
   <div class="absolute inset-0" style="background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 55%);"></div>
 
   <!-- Content overlay -->
-  <div class="absolute bottom-8 left-10 z-10">
+  <div class="spotlight-content absolute z-10" style="bottom: 32px; left: 40px;">
     <div id="spotlight-category" style="font-family: var(--font-body); font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: rgba(255,255,255,0.7);">
       {featured[0]?.category}
     </div>
@@ -39,7 +39,7 @@ const featured = projects
   </div>
 
   <!-- Progress dots -->
-  <div class="absolute bottom-6 right-8 flex gap-1.5 z-10">
+  <div class="spotlight-dots absolute flex gap-1.5 z-10" style="bottom: 24px; right: 32px;">
     {featured.map((_, i) => (
       <button
         class={`spotlight-dot w-1.5 h-1.5 rounded-full border-none cursor-pointer transition-colors duration-200 ${i === 0 ? 'bg-white' : ''}`}

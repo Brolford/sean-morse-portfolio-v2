@@ -11,29 +11,28 @@ const isComingSoon = project.comingSoon;
 >
   <!-- Gradient background -->
   <div class={`project-card-bg w-full h-full transition-transform duration-400 ${project.gradientClass}`}
-    style={`transition-timing-function: var(--ease-out);${isComingSoon ? '' : ''}`}></div>
+    style="transition-timing-function: var(--ease-out);"></div>
 
   <!-- Overlay (always visible) -->
-  <div class="absolute inset-0" style={`background: linear-gradient(to top, rgba(0,0,0,0.45) 0%, transparent 60%);${isComingSoon ? 'opacity: 0.5;' : ''}`}>
-    <!-- Bottom-left info -->
-    <div class="absolute bottom-5 left-5">
+  <div class="absolute inset-0" style={`background: linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 55%);${isComingSoon ? 'opacity: 0.5;' : ''}`}>
+    <!-- Bottom-left info stack -->
+    <div class="absolute bottom-5 left-5 right-5">
+      <!-- Descriptor (shows on hover, positioned above the title) -->
+      {!isComingSoon && project.descriptor && (
+        <div class="project-descriptor opacity-0 translate-y-2 transition-all duration-300 mb-2" style="font-family: var(--font-display); font-weight: 300; font-style: italic; font-size: 15px; color: rgba(255,255,255,0.8);">
+          {project.descriptor}
+        </div>
+      )}
       <div style="font-family: var(--font-body); font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: rgba(255,255,255,0.75);">
         {project.category}
       </div>
-      <div style="font-family: var(--font-display); font-weight: 300; font-style: italic; font-size: clamp(22px,2.5vw,40px); color: white;">
+      <div style="font-family: var(--font-display); font-weight: 300; font-style: italic; font-size: clamp(22px,2.5vw,40px); color: white; line-height: 1.15;">
         {project.title}
       </div>
-      <div style="font-family: var(--font-body); font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: rgba(255,255,255,0.75);">
+      <div style="font-family: var(--font-body); font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: rgba(255,255,255,0.75); margin-top: 2px;">
         {project.year}
       </div>
     </div>
-
-    <!-- Descriptor (shows on hover) -->
-    {!isComingSoon && project.descriptor && (
-      <div class="project-descriptor absolute left-5 opacity-0 translate-y-2 transition-all duration-300" style="bottom: 60px; font-family: var(--font-display); font-weight: 300; font-style: italic; font-size: 15px; color: rgba(255,255,255,0.8);">
-        {project.descriptor}
-      </div>
-    )}
   </div>
 </div>
 

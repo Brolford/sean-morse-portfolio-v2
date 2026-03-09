@@ -2,9 +2,9 @@
 <div id="contact-overlay" class="fixed inset-0 z-[300] opacity-0 pointer-events-none transition-opacity duration-200" style="background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);">
 </div>
 
-<div id="contact-panel" class="fixed z-[301] transition-transform duration-350" style="background: var(--color-bg); transform: translateY(100%); transition-timing-function: var(--ease-out); bottom: 0; left: 0; right: 0; border-radius: 12px 12px 0 0; padding: 48px; max-height: 90vh; overflow-y: auto;">
+<div id="contact-panel" class="fixed z-[301] transition-transform duration-350 overflow-y-auto" style="background: var(--color-bg); transition-timing-function: var(--ease-out); max-height: 90vh; padding: 48px; bottom: 0; left: 0; right: 0; border-radius: 12px 12px 0 0; transform: translateY(100%);">
   <!-- Close button -->
-  <button id="contact-close" class="absolute top-5 right-5 bg-transparent border-none cursor-pointer transition-colors duration-200" style="font-family: var(--font-body); font-size: 20px; color: var(--color-muted);" aria-label="Close contact form">×</button>
+  <button id="contact-close" class="absolute top-5 right-5 bg-transparent border-none cursor-pointer transition-colors duration-200" style="font-family: var(--font-body); font-size: 20px; color: var(--color-muted); z-index: 10;" aria-label="Close contact form">×</button>
 
   <!-- Headline -->
   <h2 style="font-family: var(--font-display); font-weight: 300; font-style: italic; font-size: 36px; color: var(--color-text); margin-bottom: 8px;">Get in touch.</h2>
@@ -53,57 +53,14 @@
   var panel = document.getElementById('contact-panel');
   var closeBtn = document.getElementById('contact-close');
   var form = document.getElementById('contact-form');
+  var isDesktop = function() { return window.innerWidth > 640; };
 
-  /* Global open/close functions */
-  window.openContactModal = function() {
-    overlay.style.pointerEvents = 'auto';
-    overlay.style.opacity = '1';
-    panel.style.transform = 'translateY(0)';
-    document.body.style.overflow = 'hidden';
-  };
-
-  window.closeContactModal = function() {
-    overlay.style.opacity = '0';
-    overlay.style.pointerEvents = 'none';
-    panel.style.transform = 'translateY(100%)';
-    document.body.style.overflow = '';
-  };
-
-  closeBtn.addEventListener('click', window.closeContactModal);
-  overlay.addEventListener('click', window.closeContactModal);
-
-  /* Desktop: centered panel */
-  function layoutPanel() {
-    if (window.innerWidth > 640) {
-      panel.style.left = '50%';
-      panel.style.right = 'auto';
-      panel.style.bottom = '50%';
-      panel.style.transform = panel.style.transform === 'translateY(0px)' || panel.style.transform === 'translateY(0)'
-        ? 'translate(-50%, 50%)'
-        : 'translate(-50%, 100%)';
-      panel.style.maxWidth = '520px';
-      panel.style.width = '100%';
-      panel.style.borderRadius = '8px';
-    } else {
-      panel.style.left = '0';
-      panel.style.right = '0';
-      panel.style.bottom = '0';
-      panel.style.maxWidth = 'none';
-      panel.style.width = 'auto';
-      panel.style.borderRadius = '12px 12px 0 0';
-      if (panel.style.transform.includes('translate(-50%')) {
-        panel.style.transform = 'translateY(0)';
-      }
-    }
-  }
-
-  /* Override open/close for desktop centering */
-  var _open = window.openContactModal;
-  window.openContactModal = function() {
+  function openModal() {
     overlay.style.pointerEvents = 'auto';
     overlay.style.opacity = '1';
     document.body.style.overflow = 'hidden';
-    if (window.innerWidth > 640) {
+
+    if (isDesktop()) {
       panel.style.left = '50%';
       panel.style.right = 'auto';
       panel.style.bottom = '50%';
@@ -116,23 +73,41 @@
       panel.style.right = '0';
       panel.style.bottom = '0';
       panel.style.maxWidth = 'none';
+      panel.style.width = 'auto';
       panel.style.borderRadius = '12px 12px 0 0';
       panel.style.transform = 'translateY(0)';
     }
-  };
+  }
 
-  window.closeContactModal = function() {
+  function closeModal() {
     overlay.style.opacity = '0';
     overlay.style.pointerEvents = 'none';
     document.body.style.overflow = '';
-    if (window.innerWidth > 640) {
-      panel.style.transform = 'translate(-50%, 100%)';
+
+    if (isDesktop()) {
+      panel.style.transform = 'translate(-50%, 150%)';
     } else {
       panel.style.transform = 'translateY(100%)';
     }
-  };
-  closeBtn.addEventListener('click', window.closeContactModal);
-  overlay.addEventListener('click', window.closeContactModal);
+  }
+
+  /* Expose globally */
+  window.openContactModal = openModal;
+  window.closeContactModal = closeModal;
+
+  /* Close via × button */
+  closeBtn.addEventListener('click', closeModal);
+
+  /* Close via overlay click (but not if clicking the panel itself) */
+  overlay.addEventListener('click', closeModal);
+  panel.addEventListener('click', function(e) { e.stopPropagation(); });
+
+  /* Close via Escape key */
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && overlay.style.opacity === '1') {
+      closeModal();
+    }
+  });
 
   /* Input focus styles */
   var inputs = panel.querySelectorAll('input, select, textarea');
@@ -164,7 +139,7 @@
     );
 
     window.location.href = 'mailto:hello@sfxm.space?subject=' + subject + '&body=' + body;
-    window.closeContactModal();
+    closeModal();
   });
 
   /* Submit button hover */

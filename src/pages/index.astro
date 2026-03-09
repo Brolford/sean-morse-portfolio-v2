@@ -22,20 +22,10 @@ const bySlug = Object.fromEntries(projects.map(p => [p.slug, p]));
   <div id="page-home" class="page-view active">
 
     <!-- HERO -->
-    <section class="min-h-screen flex items-center pt-16" style="padding-left: var(--space-fluid); padding-right: var(--space-fluid);">
+    <section class="hero-section flex items-center pt-16" style="padding-left: var(--space-fluid); padding-right: var(--space-fluid); min-height: 100vh;">
       <div class="w-full mx-auto grid grid-cols-1 md:grid-cols-[55fr_45fr] gap-8 md:gap-12 items-center" style="max-width: 1400px;">
 
-        <!-- Mobile: card first -->
-        <div class="block md:hidden hero-animate" style="transition: opacity 600ms var(--ease-out), transform 600ms var(--ease-out); transition-delay: 200ms;">
-          <div class="relative overflow-hidden rounded" style="aspect-ratio: 3/4;">
-            <div class="gradient-liquid-iv w-full h-full"></div>
-            <div class="absolute bottom-5 left-5" style="font-family: var(--font-display); font-weight: 300; font-style: italic; font-size: 28px; color: white;">
-              Liquid I.V.
-            </div>
-          </div>
-        </div>
-
-        <!-- Left column -->
+        <!-- Left column: statement leads on ALL viewports -->
         <div>
           <!-- Overline -->
           <div class="flex items-center mb-6">
@@ -63,9 +53,9 @@ const bySlug = Object.fromEntries(projects.map(p => [p.slug, p]));
           </a>
         </div>
 
-        <!-- Right column (desktop only) -->
-        <div class="hidden md:block hero-animate" style="transition: opacity 600ms var(--ease-out), transform 600ms var(--ease-out); transition-delay: 200ms;">
-          <div class="relative overflow-hidden rounded cursor-pointer" style="aspect-ratio: 3/4; transform: rotate(2.5deg); transition: transform 500ms var(--ease-out);" onmouseenter="this.style.transform='rotate(0deg) scale(1.02)'" onmouseleave="this.style.transform='rotate(2.5deg)'">
+        <!-- Right column: card image (below text on mobile, beside on desktop) -->
+        <div class="hero-animate" style="transition: opacity 600ms var(--ease-out), transform 600ms var(--ease-out); transition-delay: 200ms;">
+          <div class="hero-card relative overflow-hidden rounded cursor-pointer" style="aspect-ratio: 3/4;" onmouseenter="if(window.innerWidth>=768){this.style.transform='rotate(0deg) scale(1.02)'}" onmouseleave="if(window.innerWidth>=768){this.style.transform='rotate(2.5deg)'}">
             <div class="gradient-liquid-iv w-full h-full"></div>
             <div class="absolute bottom-5 left-5" style="font-family: var(--font-display); font-weight: 300; font-style: italic; font-size: 28px; color: white;">
               Liquid I.V.
@@ -90,23 +80,23 @@ const bySlug = Object.fromEntries(projects.map(p => [p.slug, p]));
         <h2 class="animate-up mb-6" style="font-family: var(--font-body); font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--color-muted);">Selected Work</h2>
 
         <!-- Main grid -->
-        <div class="project-grid" style="display: grid; grid-template-columns: 3fr 2fr; gap: 12px;">
-          <div class="animate-up" data-delay="1" style="grid-column: 1 / -1; height: 500px;">
+        <div class="project-grid">
+          <div class="animate-up grid-span-full" data-delay="1" style="height: 500px;">
             <ProjectCard project={bySlug['liquid-iv']} cardClass="w-full h-full" />
           </div>
-          <div class="animate-up" data-delay="1" style="grid-column: 1 / 2; height: 420px;">
+          <div class="animate-up grid-col-1" data-delay="1" style="height: 420px;">
             <ProjectCard project={bySlug['leisure-project']} cardClass="w-full h-full" />
           </div>
-          <div class="animate-up" data-delay="2" style="grid-column: 2 / 3; height: 420px;">
+          <div class="animate-up grid-col-2" data-delay="2" style="height: 420px;">
             <ProjectCard project={bySlug['alecs-ice-cream']} cardClass="w-full h-full" />
           </div>
-          <div class="animate-up" data-delay="1" style="grid-column: 2 / 3; height: 420px;">
-            <ProjectCard project={bySlug['v8']} cardClass="w-full h-full" />
-          </div>
-          <div class="animate-up" data-delay="2" style="grid-column: 1 / 2; height: 420px;">
+          <div class="animate-up grid-col-1" data-delay="1" style="height: 420px;">
             <ProjectCard project={bySlug['elenita-mezcal']} cardClass="w-full h-full" />
           </div>
-          <div class="animate-up" data-delay="1" style="grid-column: 1 / -1; height: 340px;">
+          <div class="animate-up grid-col-2" data-delay="2" style="height: 420px;">
+            <ProjectCard project={bySlug['v8']} cardClass="w-full h-full" />
+          </div>
+          <div class="animate-up grid-span-full" data-delay="1" style="height: 340px;">
             <ProjectCard project={bySlug['coming-soon']} cardClass="w-full h-full" />
           </div>
         </div>
@@ -151,25 +141,51 @@ const bySlug = Object.fromEntries(projects.map(p => [p.slug, p]));
     <section class="mx-auto pt-32 pb-24 px-6" style="max-width: 1200px;">
       <h1 class="animate-up mb-16" style="font-family: var(--font-display); font-weight: 300; font-size: clamp(48px,7vw,100px); color: var(--color-text);">Archive</h1>
 
-      <div class="archive-list">
+      <div class="archive-list flex flex-col gap-4">
         {projects.map((project, i) => (
           <div
-            class={`archive-row animate-up flex justify-between items-baseline py-5 transition-colors duration-200 ${project.caseStudy ? 'cursor-pointer' : ''}`}
+            class={`archive-row animate-up py-6 transition-colors duration-200 rounded ${project.comingSoon ? '' : 'cursor-pointer'}`}
             style="border-bottom: 1px solid var(--color-divider);"
             data-delay={String(Math.min(i + 1, 8))}
             data-slug={project.slug}
-            data-case-study={String(project.caseStudy)}
+            data-case-study="true"
+            data-gradient={project.gradientClass}
+            data-category={project.category}
+            data-year={project.year}
+            data-tagline={project.tagline}
+            data-description={project.description || ''}
+            data-client={project.client || ''}
+            data-agency={project.agency || ''}
+            data-services={project.services || ''}
+            data-credit={project.credit || ''}
+            data-problem={project.problem || ''}
+            data-solution={project.solution || ''}
+            data-results={project.results || ''}
           >
-            <span class="shrink-0" style="font-family: var(--font-display); font-weight: 300; font-style: italic; font-size: 14px; color: var(--color-muted); min-width: 36px;">
+            <!-- Index -->
+            <span class="self-start pt-1" style="font-family: var(--font-display); font-weight: 300; font-style: italic; font-size: 14px; color: var(--color-muted);">
               {String(i + 1).padStart(2, '0')}
             </span>
-            <span class="archive-name flex-1 mx-4 transition-colors duration-250" style="font-family: var(--font-display); font-weight: 300; font-style: italic; font-size: clamp(20px,2.5vw,34px); color: var(--color-text);">
-              {project.title}
-            </span>
-            <span class="hidden sm:inline shrink-0 mx-4" style="font-family: var(--font-body); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-muted);">
-              {project.category}
-            </span>
-            <span class="shrink-0" style="font-family: var(--font-body); font-size: 13px; color: var(--color-muted);">
+            <!-- Gradient thumbnail -->
+            <div class={`archive-thumb shrink-0 rounded overflow-hidden ${project.gradientClass}`} style="width: 120px; height: 80px;"></div>
+            <!-- Name + Description -->
+            <div class="min-w-0">
+              <div class="flex items-baseline gap-3 flex-wrap">
+                <span class="archive-name transition-colors duration-250" style="font-family: var(--font-display); font-weight: 300; font-style: italic; font-size: clamp(22px,2.5vw,36px); color: var(--color-text);">
+                  {project.title}
+                </span>
+                <span class="hidden sm:inline" style="font-family: var(--font-body); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-muted);">
+                  {project.category}
+                </span>
+              </div>
+              {project.description && (
+                <p class="mt-1" style="font-family: var(--font-body); font-weight: 300; font-size: 14px; line-height: 1.5; color: var(--color-muted); max-width: 560px;">
+                  {project.description}
+                </p>
+              )}
+            </div>
+            <!-- Year -->
+            <span class="shrink-0 self-start pt-2" style="font-family: var(--font-body); font-size: 13px; color: var(--color-muted);">
               {project.year}
             </span>
           </div>
@@ -239,13 +255,99 @@ const bySlug = Object.fromEntries(projects.map(p => [p.slug, p]));
   <!-- PAGE: PROJECT DETAIL (placeholder) -->
   <!-- ═══════════════════════════════════════════════════ -->
   <div id="page-project" class="page-view">
-    <section class="mx-auto px-6" style="max-width: 800px; padding-top: 120px; padding-bottom: 96px;">
-      <a href="#/work" class="inline-block mb-8" style="font-family: var(--font-body); font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-muted);">← Back to Archive</a>
-      <div id="project-detail-gradient" class="w-full rounded mb-8" style="aspect-ratio: 16/9;"></div>
-      <h1 id="project-detail-title" style="font-family: var(--font-display); font-weight: 300; font-style: italic; font-size: var(--text-display-md); color: var(--color-text); margin-bottom: 8px;"></h1>
-      <p id="project-detail-category" style="font-family: var(--font-body); font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--color-muted); margin-bottom: 4px;"></p>
-      <p id="project-detail-year" style="font-family: var(--font-body); font-size: 13px; color: var(--color-muted); margin-bottom: 24px;"></p>
-      <p id="project-detail-tagline" style="font-family: var(--font-body); font-weight: 300; font-size: 18px; line-height: 1.8; color: var(--color-text);">Case study coming soon.</p>
+    <!-- Full-width gradient hero -->
+    <div id="project-detail-gradient" class="w-full" style="height: 50vh; min-height: 320px; max-height: 560px;"></div>
+
+    <section class="mx-auto px-6" style="max-width: 1100px; padding-top: 48px; padding-bottom: 96px;">
+      <!-- Back link -->
+      <a href="#/work" class="inline-block mb-10" style="font-family: var(--font-body); font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-muted);">← Back to Archive</a>
+
+      <!-- Two-column layout: content left, sidebar right -->
+      <div class="grid grid-cols-1 md:grid-cols-[1fr_320px] gap-x-16 gap-y-12">
+
+        <!-- LEFT COLUMN -->
+        <div>
+          <!-- Tagline -->
+          <h1 id="project-detail-tagline" style="font-family: var(--font-display); font-weight: 300; font-style: italic; font-size: clamp(28px,3.5vw,44px); line-height: 1.2; color: var(--color-text); margin-bottom: 32px;"></h1>
+
+          <!-- Description -->
+          <p id="project-detail-description" style="font-family: var(--font-body); font-weight: 300; font-size: 17px; line-height: 1.8; color: var(--color-text); margin-bottom: 48px;"></p>
+
+          <!-- Accordion sections -->
+          <div class="project-accordion">
+            <!-- Problem -->
+            <div class="accordion-item" style="border-top: 1px solid var(--color-divider); padding: 24px 0;">
+              <button class="accordion-trigger flex justify-between items-center w-full bg-transparent border-none cursor-pointer text-left" style="font-family: var(--font-body); font-weight: 500; font-size: 16px; color: var(--color-text);">
+                Problem
+                <span class="accordion-icon transition-transform duration-200" style="font-size: 18px; color: var(--color-muted);">+</span>
+              </button>
+              <div class="accordion-content overflow-hidden" style="max-height: 0; transition: max-height 300ms var(--ease-out); opacity: 0; transition: max-height 300ms var(--ease-out), opacity 200ms ease;">
+                <p id="project-detail-problem" class="pt-4" style="font-family: var(--font-body); font-weight: 300; font-size: 15px; line-height: 1.7; color: var(--color-muted);"></p>
+              </div>
+            </div>
+
+            <!-- Solution -->
+            <div class="accordion-item" style="border-top: 1px solid var(--color-divider); padding: 24px 0;">
+              <button class="accordion-trigger flex justify-between items-center w-full bg-transparent border-none cursor-pointer text-left" style="font-family: var(--font-body); font-weight: 500; font-size: 16px; color: var(--color-text);">
+                Solution
+                <span class="accordion-icon transition-transform duration-200" style="font-size: 18px; color: var(--color-muted);">+</span>
+              </button>
+              <div class="accordion-content overflow-hidden" style="max-height: 0; transition: max-height 300ms var(--ease-out); opacity: 0; transition: max-height 300ms var(--ease-out), opacity 200ms ease;">
+                <p id="project-detail-solution" class="pt-4" style="font-family: var(--font-body); font-weight: 300; font-size: 15px; line-height: 1.7; color: var(--color-muted);"></p>
+              </div>
+            </div>
+
+            <!-- Results -->
+            <div class="accordion-item" style="border-top: 1px solid var(--color-divider); border-bottom: 1px solid var(--color-divider); padding: 24px 0;">
+              <button class="accordion-trigger flex justify-between items-center w-full bg-transparent border-none cursor-pointer text-left" style="font-family: var(--font-body); font-weight: 500; font-size: 16px; color: var(--color-text);">
+                Results
+                <span class="accordion-icon transition-transform duration-200" style="font-size: 18px; color: var(--color-muted);">+</span>
+              </button>
+              <div class="accordion-content overflow-hidden" style="max-height: 0; transition: max-height 300ms var(--ease-out); opacity: 0; transition: max-height 300ms var(--ease-out), opacity 200ms ease;">
+                <p id="project-detail-results" class="pt-4" style="font-family: var(--font-body); font-weight: 300; font-size: 15px; line-height: 1.7; color: var(--color-muted);"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT SIDEBAR -->
+        <div class="flex flex-col gap-8 md:pt-2">
+          <!-- Client -->
+          <div style="border-bottom: 1px solid var(--color-divider); padding-bottom: 20px;">
+            <span style="font-family: var(--font-body); font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--color-accent); display: block; margin-bottom: 6px;">Client</span>
+            <span id="project-detail-client" style="font-family: var(--font-body); font-weight: 400; font-size: 15px; color: var(--color-text);"></span>
+          </div>
+
+          <!-- Agency -->
+          <div style="border-bottom: 1px solid var(--color-divider); padding-bottom: 20px;">
+            <span style="font-family: var(--font-body); font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--color-accent); display: block; margin-bottom: 6px;">Agency</span>
+            <span id="project-detail-agency" style="font-family: var(--font-body); font-weight: 400; font-size: 15px; color: var(--color-text);"></span>
+          </div>
+
+          <!-- Services -->
+          <div style="border-bottom: 1px solid var(--color-divider); padding-bottom: 20px;">
+            <span style="font-family: var(--font-body); font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--color-accent); display: block; margin-bottom: 6px;">Services</span>
+            <span id="project-detail-services" style="font-family: var(--font-body); font-weight: 400; font-size: 15px; color: var(--color-text);"></span>
+          </div>
+
+          <!-- Credits -->
+          <div>
+            <span style="font-family: var(--font-body); font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--color-accent); display: block; margin-bottom: 6px;">Credits</span>
+            <span id="project-detail-credit" style="font-family: var(--font-body); font-weight: 400; font-size: 15px; color: var(--color-text);"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Image collage — layout varies per project, built by JS -->
+      <div id="project-collage" class="mt-16 mb-12"></div>
+
+      <!-- CTA -->
+      <div class="text-center" style="padding: 48px 0; border-top: 1px solid var(--color-divider);">
+        <p style="font-family: var(--font-body); font-size: 17px; color: var(--color-muted); margin-bottom: 8px;">Interested in working together?</p>
+        <button class="cta-link bg-transparent border-none cursor-pointer" style="font-family: var(--font-body); font-weight: 400; font-size: 15px; color: var(--color-text);" onclick="if(typeof openContactModal==='function')openContactModal()">
+          Get in touch →
+        </button>
+      </div>
     </section>
   </div>
 

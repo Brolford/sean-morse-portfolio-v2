@@ -3,40 +3,95 @@
  * Routes: #/ (home), #/work (archive), #/about, #/project/[slug]
  */
 (function() {
-  /* Route → page-view ID mapping */
   var routes = {
     '#/':      'page-home',
     '#/work':  'page-work',
     '#/about': 'page-about',
   };
 
-  /* Title per route */
   var titles = {
     '#/':      'Sean Morse — Design Director',
     '#/work':  'Archive — Sean Morse',
     '#/about': 'About — Sean Morse',
   };
 
-  /* Project data (imported inline from rendered page) */
-  var projectData = null;
-  function getProjects() {
-    if (projectData) return projectData;
-    /* Read from project cards or archive rows in the DOM */
-    projectData = [];
-    document.querySelectorAll('.archive-row').forEach(function(row) {
-      projectData.push({
-        slug: row.getAttribute('data-slug'),
-        title: row.querySelector('.archive-name') ? row.querySelector('.archive-name').textContent.trim() : '',
-        caseStudy: row.getAttribute('data-case-study') === 'true',
-      });
-    });
-    return projectData;
-  }
+  /**
+   * Collage layout patterns — each returns an HTML string.
+   * Uses the gradient class to fill placeholder panels.
+   * 5 distinct layouts assigned by project index.
+   */
+  var collageLayouts = [
+    /* Layout A: Wide hero + 3-column strip */
+    function(g) {
+      return '<div class="collage-stack" style="display:flex;flex-direction:column;gap:12px;">' +
+        '<div class="' + g + ' rounded" style="width:100%;aspect-ratio:2.4/1;"></div>' +
+        '<div class="collage-grid" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">' +
+          '<div class="' + g + ' rounded" style="aspect-ratio:3/4;opacity:0.85;"></div>' +
+          '<div class="' + g + ' rounded" style="aspect-ratio:3/4;opacity:0.7;"></div>' +
+          '<div class="' + g + ' rounded" style="aspect-ratio:3/4;opacity:0.55;"></div>' +
+        '</div>' +
+      '</div>';
+    },
+    /* Layout B: Asymmetric 2-col + tall sidebar */
+    function(g) {
+      return '<div class="collage-grid" style="display:grid;grid-template-columns:1.6fr 1fr;gap:12px;">' +
+        '<div style="display:flex;flex-direction:column;gap:12px;">' +
+          '<div class="' + g + ' rounded" style="width:100%;aspect-ratio:4/3;"></div>' +
+          '<div class="' + g + ' rounded" style="width:100%;aspect-ratio:3/1;opacity:0.7;"></div>' +
+        '</div>' +
+        '<div class="' + g + ' rounded" style="width:100%;min-height:200px;opacity:0.85;"></div>' +
+      '</div>';
+    },
+    /* Layout C: Stacked hero + 2 offset squares */
+    function(g) {
+      return '<div class="collage-stack" style="display:flex;flex-direction:column;gap:12px;">' +
+        '<div class="' + g + ' rounded" style="width:100%;aspect-ratio:16/7;"></div>' +
+        '<div class="collage-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">' +
+          '<div class="' + g + ' rounded" style="aspect-ratio:1/1;opacity:0.8;"></div>' +
+          '<div class="' + g + ' rounded" style="aspect-ratio:1/1;opacity:0.6;"></div>' +
+        '</div>' +
+      '</div>';
+    },
+    /* Layout D: Mosaic — tall left + stacked right */
+    function(g) {
+      return '<div class="collage-grid" style="display:grid;grid-template-columns:1fr 1.4fr;gap:12px;">' +
+        '<div class="' + g + ' rounded" style="width:100%;min-height:200px;aspect-ratio:3/4;"></div>' +
+        '<div style="display:flex;flex-direction:column;gap:12px;">' +
+          '<div class="' + g + ' rounded" style="width:100%;aspect-ratio:16/9;opacity:0.85;"></div>' +
+          '<div class="collage-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">' +
+            '<div class="' + g + ' rounded" style="aspect-ratio:1/1;opacity:0.7;"></div>' +
+            '<div class="' + g + ' rounded" style="aspect-ratio:1/1;opacity:0.55;"></div>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    },
+    /* Layout E: Full bleed + narrow strip + wide */
+    function(g) {
+      return '<div class="collage-stack" style="display:flex;flex-direction:column;gap:12px;">' +
+        '<div class="' + g + ' rounded" style="width:100%;aspect-ratio:21/9;"></div>' +
+        '<div class="collage-grid" style="display:grid;grid-template-columns:2fr 1fr;gap:12px;">' +
+          '<div class="' + g + ' rounded" style="aspect-ratio:2/1;opacity:0.8;"></div>' +
+          '<div class="' + g + ' rounded" style="aspect-ratio:1/1;opacity:0.65;"></div>' +
+        '</div>' +
+        '<div class="' + g + ' rounded" style="width:80%;aspect-ratio:3/1;opacity:0.5;margin:0 auto;"></div>' +
+      '</div>';
+    },
+  ];
+
+  /* Map slugs to layout indices so each project gets a unique layout */
+  var layoutMap = {
+    'liquid-iv': 0,
+    'leisure-project': 1,
+    'alecs-ice-cream': 2,
+    'v8': 3,
+    'elenita-mezcal': 4,
+    'over-easy': 1,
+    'mimio': 3,
+    'coming-soon': 0,
+  };
 
   function navigate() {
     var hash = window.location.hash || '#/';
-
-    /* Determine which page to show */
     var pageId = routes[hash];
     var projectSlug = null;
 
@@ -61,87 +116,107 @@
     var target = document.getElementById(pageId);
     if (target) {
       target.style.display = 'block';
-      /* Force reflow then fade in */
       target.offsetHeight;
       target.style.opacity = '1';
       target.classList.add('active');
     }
 
-    /* Update title */
     if (titles[hash]) {
       document.title = titles[hash];
     } else if (projectSlug) {
       document.title = projectSlug.replace(/-/g, ' ').replace(/\b\w/g, function(l) { return l.toUpperCase(); }) + ' — Sean Morse';
     }
 
-    /* Populate project detail if needed */
     if (pageId === 'page-project' && projectSlug) {
       populateProject(projectSlug);
     }
 
-    /* Scroll to top */
     window.scrollTo(0, 0);
 
-    /* Re-observe animate-up elements on this page */
     if (typeof window.reObserveAnimations === 'function') {
       window.reObserveAnimations();
     }
   }
 
   function populateProject(slug) {
-    var gradientEl = document.getElementById('project-detail-gradient');
-    var titleEl = document.getElementById('project-detail-title');
-    var catEl = document.getElementById('project-detail-category');
-    var yearEl = document.getElementById('project-detail-year');
-    var taglineEl = document.getElementById('project-detail-tagline');
-
-    /* Find project data from archive rows */
     var row = document.querySelector('.archive-row[data-slug="' + slug + '"]');
-    if (row) {
-      var name = row.querySelector('.archive-name');
-      if (titleEl && name) titleEl.textContent = name.textContent.trim();
+    if (!row) return;
+
+    var gradientClass = row.getAttribute('data-gradient') || '';
+    var name = row.querySelector('.archive-name');
+    var title = name ? name.textContent.trim() : '';
+
+    /* Hero gradient */
+    var gradientEl = document.getElementById('project-detail-gradient');
+    if (gradientEl) {
+      gradientEl.className = 'w-full';
+      gradientEl.style.height = '50vh';
+      gradientEl.style.minHeight = '320px';
+      gradientEl.style.maxHeight = '560px';
+      gradientEl.classList.add(gradientClass);
     }
 
-    /* Find gradient from project cards */
-    var card = document.querySelector('.project-card[data-slug="' + slug + '"]');
-    if (card && gradientEl) {
-      var bg = card.querySelector('.project-card-bg');
-      if (bg) {
-        gradientEl.className = 'w-full rounded mb-8';
-        gradientEl.style.aspectRatio = '16/9';
-        /* Copy gradient class */
-        bg.classList.forEach(function(cls) {
-          if (cls.startsWith('gradient-')) {
-            gradientEl.classList.add(cls);
-          }
-        });
-      }
+    /* Text fields */
+    setText('project-detail-tagline', row.getAttribute('data-tagline') || title);
+    setText('project-detail-description', row.getAttribute('data-description') || '');
+    setText('project-detail-client', row.getAttribute('data-client') || '');
+    setText('project-detail-agency', row.getAttribute('data-agency') || '');
+    setText('project-detail-services', row.getAttribute('data-services') || '');
+    setText('project-detail-credit', row.getAttribute('data-credit') || '');
+    setText('project-detail-problem', row.getAttribute('data-problem') || '');
+    setText('project-detail-solution', row.getAttribute('data-solution') || '');
+    setText('project-detail-results', row.getAttribute('data-results') || '');
+
+    /* Build collage with project-specific layout */
+    var collage = document.getElementById('project-collage');
+    if (collage) {
+      var layoutIndex = layoutMap[slug] !== undefined ? layoutMap[slug] : 0;
+      collage.innerHTML = collageLayouts[layoutIndex](gradientClass);
     }
 
-    /* Set other fields from DOM data attributes or hardcoded lookup */
-    var allCards = document.querySelectorAll('.project-card');
-    allCards.forEach(function(c) {
-      if (c.getAttribute('data-slug') === slug) {
-        var overlay = c.querySelector('[style*="category"]');
-      }
+    /* Reset accordions */
+    document.querySelectorAll('.accordion-item').forEach(function(item) {
+      var content = item.querySelector('.accordion-content');
+      var icon = item.querySelector('.accordion-icon');
+      if (content) { content.style.maxHeight = '0'; content.style.opacity = '0'; }
+      if (icon) icon.textContent = '+';
     });
 
-    /* Set category/year from archive row */
-    if (row) {
-      var spans = row.querySelectorAll('span');
-      if (catEl && spans.length >= 3) catEl.textContent = spans[2].textContent.trim();
-      if (yearEl && spans.length >= 4) yearEl.textContent = spans[3].textContent.trim();
-    }
-
-    if (taglineEl) taglineEl.textContent = 'Case study coming soon.';
+    document.title = title + ' — Sean Morse';
   }
 
-  /* Listen for hash changes */
+  function setText(id, text) {
+    var el = document.getElementById(id);
+    if (el) el.textContent = text;
+  }
+
+  /* Accordion */
+  function wireAccordions() {
+    document.querySelectorAll('.accordion-trigger').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var item = btn.closest('.accordion-item');
+        var content = item.querySelector('.accordion-content');
+        var icon = item.querySelector('.accordion-icon');
+        var isOpen = content.style.maxHeight !== '0px' && content.style.maxHeight !== '0';
+
+        if (isOpen) {
+          content.style.maxHeight = '0';
+          content.style.opacity = '0';
+          icon.textContent = '+';
+        } else {
+          content.style.maxHeight = content.scrollHeight + 'px';
+          content.style.opacity = '1';
+          icon.textContent = '×';
+        }
+      });
+    });
+  }
+
   window.addEventListener('hashchange', navigate);
 
-  /* Initial route on page load */
   document.addEventListener('DOMContentLoaded', function() {
     navigate();
+    wireAccordions();
 
     /* Wire project card clicks */
     document.querySelectorAll('.project-card').forEach(function(card) {
@@ -154,27 +229,23 @@
 
     /* Wire archive row clicks */
     document.querySelectorAll('.archive-row').forEach(function(row) {
-      if (row.getAttribute('data-case-study') !== 'true') {
-        row.style.cursor = 'default';
-        return;
-      }
       row.addEventListener('click', function() {
         var slug = row.getAttribute('data-slug');
         if (slug) window.location.hash = '#/project/' + slug;
       });
     });
 
-    /* Archive row hover effects */
+    /* Archive row hover */
     document.querySelectorAll('.archive-row').forEach(function(row) {
       row.addEventListener('mouseenter', function() {
         this.style.background = 'rgba(15,15,15,0.025)';
-        var name = this.querySelector('.archive-name');
-        if (name) name.style.color = 'var(--color-accent)';
+        var n = this.querySelector('.archive-name');
+        if (n) n.style.color = 'var(--color-accent)';
       });
       row.addEventListener('mouseleave', function() {
         this.style.background = 'transparent';
-        var name = this.querySelector('.archive-name');
-        if (name) name.style.color = 'var(--color-text)';
+        var n = this.querySelector('.archive-name');
+        if (n) n.style.color = 'var(--color-text)';
       });
     });
   });
