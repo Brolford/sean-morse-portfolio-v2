@@ -10,7 +10,12 @@
  *   tagline        — One-liner shown in spotlight overlay
  *   descriptor     — Short phrase shown on card hover
  *   description    — 1-2 sentence summary for archive list + project page
- *   gradientClass  — CSS class for placeholder gradient (maps to future photos)
+ *   image          — Path to card image (e.g. "/images/liquid-iv.jpg"). Falls back to gradient if empty.
+ *   imagePosition  — CSS object-position value (default "center"). Use "top", "bottom", etc. if needed.
+ *   stickerNumber  — Big center text for sticker badge (e.g. "+550"). If set, sticker renders on card.
+ *   stickerLabel   — Smaller text below the number (e.g. "locations launched")
+ *   stickerEdge    — Text repeated around sticker edge (defaults to project title)
+ *   gradientClass  — CSS class for placeholder gradient (used when no image provided)
  *   featured       — true = appears in spotlight carousel on homepage
  *   spotlightOrder — order in spotlight rotation (only needed if featured: true)
  *   caseStudy      — true = clicking links to #/project/[slug] detail page
@@ -35,6 +40,8 @@ export const projects = [
     descriptor: 'Hydration Multiplier.',
     description: 'Comprehensive brand and packaging redesign for the category-defining hydration brand, acquired by Unilever for over $500M.',
     gradientClass: 'gradient-liquid-iv',
+    stickerNumber: '+550',
+    stickerLabel: 'locations launched',
     featured: true,
     spotlightOrder: 1,
     caseStudy: false,

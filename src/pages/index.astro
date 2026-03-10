@@ -48,10 +48,6 @@ const bySlug = Object.fromEntries(projects.map(p => [p.slug, p]));
             Brand development and packaging design for CPG brands that take their craft seriously.
           </p>
 
-          <!-- CTA -->
-          <a href="#/work" class="cta-link hero-animate inline-block mt-6" style="font-family: var(--font-body); font-weight: 400; font-size: 14px; color: var(--color-text); transition: opacity 400ms var(--ease-out), transform 400ms var(--ease-out); transition-delay: 560ms;">
-            See the work →
-          </a>
         </div>
 
         <!-- Right column: card image (below text on mobile, beside on desktop) -->
@@ -81,26 +77,42 @@ const bySlug = Object.fromEntries(projects.map(p => [p.slug, p]));
         <h2 class="animate-up mb-6" style="font-family: var(--font-body); font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--color-muted);">Selected Work</h2>
 
         <!-- Main grid -->
-        <div class="project-grid">
-          <div class="animate-up grid-span-full relative" data-delay="1" style="height: 500px;">
-            <ProjectCard project={bySlug['liquid-iv']} cardClass="w-full h-full" />
-            <StickerBadge edgeText="LIQUID I.V." statNumber="+550" statLabel="locations launched" size={110} />
-          </div>
-          <div class="animate-up grid-col-1" data-delay="1" style="height: 420px;">
+        <!-- Row: Full-width hero card -->
+        <div class="relative animate-up mb-3" data-delay="1" style="height: 500px;">
+          <ProjectCard project={bySlug['liquid-iv']} cardClass="w-full h-full" />
+          {bySlug['liquid-iv'].stickerNumber && (
+            <StickerBadge
+              edgeText={bySlug['liquid-iv'].stickerEdge || bySlug['liquid-iv'].title}
+              statNumber={bySlug['liquid-iv'].stickerNumber}
+              statLabel={bySlug['liquid-iv'].stickerLabel || ''}
+              size={140}
+            />
+          )}
+        </div>
+
+        <!-- Row: Big left, small right (3fr / 2fr) -->
+        <div class="grid grid-cols-1 md:grid-cols-[3fr_2fr] gap-3 mb-3">
+          <div class="animate-up" data-delay="1" style="height: 440px;">
             <ProjectCard project={bySlug['leisure-project']} cardClass="w-full h-full" />
           </div>
-          <div class="animate-up grid-col-2" data-delay="2" style="height: 420px;">
+          <div class="animate-up" data-delay="2" style="height: 440px;">
             <ProjectCard project={bySlug['alecs-ice-cream']} cardClass="w-full h-full" />
           </div>
-          <div class="animate-up grid-col-1" data-delay="1" style="height: 420px;">
+        </div>
+
+        <!-- Row: Small left, big right (2fr / 3fr) — flipped -->
+        <div class="grid grid-cols-1 md:grid-cols-[2fr_3fr] gap-3 mb-3">
+          <div class="animate-up" data-delay="1" style="height: 380px;">
             <ProjectCard project={bySlug['elenita-mezcal']} cardClass="w-full h-full" />
           </div>
-          <div class="animate-up grid-col-2" data-delay="2" style="height: 420px;">
+          <div class="animate-up" data-delay="2" style="height: 380px;">
             <ProjectCard project={bySlug['v8']} cardClass="w-full h-full" />
           </div>
-          <div class="animate-up grid-span-full" data-delay="1" style="height: 340px;">
-            <ProjectCard project={bySlug['coming-soon']} cardClass="w-full h-full" />
-          </div>
+        </div>
+
+        <!-- Row: Full-width coming soon -->
+        <div class="animate-up" data-delay="1" style="height: 340px;">
+          <ProjectCard project={bySlug['coming-soon']} cardClass="w-full h-full" />
         </div>
 
         <!-- Lower grid -->
