@@ -5,8 +5,8 @@ const isHome = currentPath === '/';
 const isWork = currentPath === '/work' || currentPath === '/work/';
 const isAbout = currentPath === '/about' || currentPath === '/about/';
 ---
-<!-- Fixed navigation bar with scroll behavior and mobile hamburger -->
-<nav id="main-nav" class="fixed top-0 left-0 right-0 z-[100] h-16 flex items-center justify-between transition-all duration-300" style="padding: 0 var(--space-fluid);">
+<!-- Floating pill navigation — detaches and rounds on scroll -->
+<nav id="main-nav" class="fixed top-0 left-0 right-0 z-[100] h-14 flex items-center justify-between nav-floating" style="padding: 0 var(--space-fluid);">
   <!-- Logo -->
   <a href="/" class="nav-logo" style="font-family: var(--font-display); font-weight: 300; font-size: 18px; color: var(--color-text);">
     Sean Morse
@@ -49,22 +49,16 @@ const isAbout = currentPath === '/about' || currentPath === '/about/';
   const contactBtn = document.getElementById('nav-contact-btn');
   const mobileContactBtn = overlay.querySelector('.mobile-contact-btn');
 
-  /* Scroll behavior — transparent → solid after 80px */
+  /* Scroll behavior — transparent flat → floating pill after 80px */
   let scrolled = false;
   function checkScroll() {
     const shouldBeScrolled = window.scrollY > 80;
     if (shouldBeScrolled !== scrolled) {
       scrolled = shouldBeScrolled;
       if (scrolled) {
-        nav.style.background = 'var(--color-bg)';
-        nav.style.backdropFilter = 'blur(12px)';
-        nav.style.WebkitBackdropFilter = 'blur(12px)';
-        nav.style.borderBottom = '1px solid var(--color-divider)';
+        nav.classList.add('nav-scrolled');
       } else {
-        nav.style.background = 'transparent';
-        nav.style.backdropFilter = 'none';
-        nav.style.WebkitBackdropFilter = 'none';
-        nav.style.borderBottom = '1px solid transparent';
+        nav.classList.remove('nav-scrolled');
       }
     }
   }
