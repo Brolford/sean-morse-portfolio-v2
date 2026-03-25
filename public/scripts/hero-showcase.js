@@ -44,7 +44,10 @@
     imagesData.forEach(function(img, i) {
       var div = document.createElement('div');
       div.className = 'hero-bg-slide';
-      div.style.cssText = 'position:absolute;inset:0;opacity:0;transition:opacity 1.2s ease;will-change:opacity,transform;';
+      /* Smooth crossfade: 0.8s is fast enough to feel seamless, slow enough to not flash */
+      div.style.cssText = 'position:absolute;inset:0;opacity:0;' +
+        'transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 4s cubic-bezier(0.4, 0, 0.2, 1);' +
+        'will-change:opacity,transform;';
       var variant = kenBurnsVariants[i % kenBurnsVariants.length];
       div.style.transform = variant.from;
       div.style.backgroundImage = 'url(' + img.src + ')';
@@ -61,23 +64,29 @@
     function showSlide(index) {
       slides.forEach(function(s, i) {
         if (i === index) {
+          /* Incoming: fade in + Ken Burns drift over 4s */
+          s.style.transition = 'opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 4s cubic-bezier(0.4, 0, 0.2, 1)';
           s.style.opacity = '1';
-          s.style.transition = 'opacity 1.2s ease, transform 6s ease';
           s.style.transform = s.getAttribute('data-kb-to');
-        } else {
+        } else if (s.style.opacity !== '0') {
+          /* Outgoing: fade out smoothly, keep current transform position (no snap) */
+          s.style.transition = 'opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
           s.style.opacity = '0';
-          s.style.transition = 'opacity 1.2s ease';
-          s.style.transform = s.getAttribute('data-kb-from');
+          /* Reset transform AFTER fade completes so it's invisible when it snaps */
+          setTimeout(function() {
+            s.style.transition = 'none';
+            s.style.transform = s.getAttribute('data-kb-from');
+          }, 900);
         }
       });
       currentBgIndex = index;
     }
 
-    /* Start the cycle */
+    /* Start the cycle — 2.5s per image, fast and confident */
     showSlide(0);
     activeBgInterval = setInterval(function() {
       showSlide((currentBgIndex + 1) % slides.length);
-    }, 5000);
+    }, 2500);
   }
 
   function initCursorGlow() {
