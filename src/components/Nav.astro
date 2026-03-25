@@ -40,69 +40,94 @@ const isAbout = currentPath === '/about' || currentPath === '/about/';
 
 <script is:inline>
 (function() {
-  const nav = document.getElementById('main-nav');
-  if (!nav) return;
-  const hamburger = document.getElementById('hamburger-btn');
-  const overlay = document.getElementById('mobile-overlay');
-  const closeBtn = document.getElementById('mobile-close-btn');
-  const mobileLinks = overlay.querySelectorAll('.mobile-nav-link');
-  const contactBtn = document.getElementById('nav-contact-btn');
-  const mobileContactBtn = overlay.querySelector('.mobile-contact-btn');
+  function initNav() {
+    var nav = document.getElementById('main-nav');
+    if (!nav) return;
+    var hamburger = document.getElementById('hamburger-btn');
+    var overlay = document.getElementById('mobile-overlay');
+    var closeBtn = document.getElementById('mobile-close-btn');
+    var mobileLinks = overlay.querySelectorAll('.mobile-nav-link');
+    var contactBtn = document.getElementById('nav-contact-btn');
+    var mobileContactBtn = overlay.querySelector('.mobile-contact-btn');
 
-  /* Scroll behavior — transparent flat → floating pill after 80px */
-  let scrolled = false;
-  function checkScroll() {
-    const shouldBeScrolled = window.scrollY > 80;
-    if (shouldBeScrolled !== scrolled) {
-      scrolled = shouldBeScrolled;
-      if (scrolled) {
-        nav.classList.add('nav-scrolled');
-      } else {
-        nav.classList.remove('nav-scrolled');
+    /* Reset scroll state on every navigation */
+    var scrolled = false;
+    nav.classList.remove('nav-scrolled');
+
+    function checkScroll() {
+      var shouldBeScrolled = window.scrollY > 80;
+      if (shouldBeScrolled !== scrolled) {
+        scrolled = shouldBeScrolled;
+        if (scrolled) {
+          nav.classList.add('nav-scrolled');
+        } else {
+          nav.classList.remove('nav-scrolled');
+        }
       }
     }
-  }
-  window.addEventListener('scroll', checkScroll, { passive: true });
-  checkScroll();
 
-  /* Mobile overlay open/close */
-  function openMobile() {
-    overlay.style.pointerEvents = 'auto';
-    overlay.style.opacity = '1';
-    mobileLinks.forEach(function(link, i) {
-      setTimeout(function() {
-        link.style.opacity = '1';
-        link.style.transform = 'translateY(0)';
-      }, i * 80);
-    });
-    document.body.style.overflow = 'hidden';
-  }
-  function closeMobile() {
-    overlay.style.opacity = '0';
-    overlay.style.pointerEvents = 'none';
-    mobileLinks.forEach(function(link) {
-      link.style.opacity = '0';
-      link.style.transform = 'translateY(16px)';
-    });
-    document.body.style.overflow = '';
-  }
-  hamburger.addEventListener('click', openMobile);
-  closeBtn.addEventListener('click', closeMobile);
-  mobileLinks.forEach(function(link) {
-    if (!link.classList.contains('mobile-contact-btn')) {
-      link.addEventListener('click', closeMobile);
+    /* Remove old listener before adding new one */
+    window.removeEventListener('scroll', window.__navScrollFn);
+    window.__navScrollFn = checkScroll;
+    window.addEventListener('scroll', checkScroll, { passive: true });
+    checkScroll();
+
+    /* Mobile overlay open/close */
+    function openMobile() {
+      overlay.style.pointerEvents = 'auto';
+      overlay.style.opacity = '1';
+      mobileLinks.forEach(function(link, i) {
+        setTimeout(function() {
+          link.style.opacity = '1';
+          link.style.transform = 'translateY(0)';
+        }, i * 80);
+      });
+      document.body.style.overflow = 'hidden';
     }
-  });
+    function closeMobile() {
+      overlay.style.opacity = '0';
+      overlay.style.pointerEvents = 'none';
+      mobileLinks.forEach(function(link) {
+        link.style.opacity = '0';
+        link.style.transform = 'translateY(16px)';
+      });
+      document.body.style.overflow = '';
+    }
 
-  /* Contact modal triggers */
-  contactBtn.addEventListener('click', function() {
-    if (typeof window.openContactModal === 'function') window.openContactModal();
-  });
-  mobileContactBtn.addEventListener('click', function() {
-    closeMobile();
-    setTimeout(function() {
-      if (typeof window.openContactModal === 'function') window.openContactModal();
-    }, 300);
-  });
+    if (!hamburger.dataset.wired) {
+      hamburger.dataset.wired = 'true';
+      hamburger.addEventListener('click', openMobile);
+    }
+    if (!closeBtn.dataset.wired) {
+      closeBtn.dataset.wired = 'true';
+      closeBtn.addEventListener('click', closeMobile);
+    }
+    mobileLinks.forEach(function(link) {
+      if (!link.classList.contains('mobile-contact-btn') && !link.dataset.wired) {
+        link.dataset.wired = 'true';
+        link.addEventListener('click', closeMobile);
+      }
+    });
+
+    /* Contact modal triggers */
+    if (contactBtn && !contactBtn.dataset.modalWired) {
+      contactBtn.dataset.modalWired = 'true';
+      contactBtn.addEventListener('click', function() {
+        if (typeof window.openContactModal === 'function') window.openContactModal();
+      });
+    }
+    if (mobileContactBtn && !mobileContactBtn.dataset.modalWired) {
+      mobileContactBtn.dataset.modalWired = 'true';
+      mobileContactBtn.addEventListener('click', function() {
+        closeMobile();
+        setTimeout(function() {
+          if (typeof window.openContactModal === 'function') window.openContactModal();
+        }, 300);
+      });
+    }
+  }
+
+  initNav();
+  document.addEventListener('astro:page-load', initNav);
 })();
 </script>
