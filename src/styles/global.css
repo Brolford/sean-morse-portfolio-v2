@@ -60,23 +60,34 @@ button {
 }
 
 /* ── Floating Pill Nav ── */
+/* Nav stays left:0 right:0 always — contracts via max-width for smooth morph */
 .nav-floating {
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  left: 0;
+  right: 0;
+  max-width: 100%;
+  margin: 0 auto;
+  top: 0;
   background: transparent;
   border-radius: 0;
-  margin: 0;
   border: 1px solid transparent;
   box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  /* Smooth morph — all properties transition together */
+  transition:
+    max-width 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    top 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    border-radius 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    background 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease,
+    backdrop-filter 0.3s ease;
 }
 .nav-floating.nav-scrolled {
   top: 12px;
-  left: var(--space-fluid);
-  right: var(--space-fluid);
-  width: auto;
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 0 24px !important;
-  background: rgba(244, 240, 232, 0.85);
+  max-width: 860px;
+  padding: 0 28px !important;
+  background: rgba(244, 240, 232, 0.88);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-radius: 100px;
@@ -85,10 +96,9 @@ button {
 }
 @media (max-width: 767px) {
   .nav-floating.nav-scrolled {
-    left: 12px;
-    right: 12px;
     top: 8px;
-    border-radius: 16px;
+    max-width: calc(100% - 24px);
+    border-radius: 20px;
     padding: 0 16px !important;
   }
 }
