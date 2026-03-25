@@ -37,8 +37,12 @@ const Tag = isClickable ? 'a' : 'div';
   <div class="absolute inset-0" style={`background: linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 55%);${isComingSoon ? 'opacity: 0.5;' : ''}`}>
     <!-- Lock indicator for password-protected projects -->
     {isLocked && (
-      <div class="absolute top-4 right-4" style="font-family: var(--font-body); font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(255,255,255,0.5);">
-        Available upon request
+      <div class="absolute top-4 right-4 flex items-center gap-1.5" style="opacity: 0.5;">
+        <svg width="12" height="14" viewBox="0 0 12 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="0.5" y="5.5" width="11" height="8" rx="1.5" stroke="white" stroke-width="1"/>
+          <path d="M3 5.5V4C3 2.34 4.34 1 6 1C7.66 1 9 2.34 9 4V5.5" stroke="white" stroke-width="1" stroke-linecap="round"/>
+          <circle cx="6" cy="9.5" r="1" fill="white"/>
+        </svg>
       </div>
     )}
 
