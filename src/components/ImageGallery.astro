@@ -1,0 +1,56 @@
+---
+/**
+ * ImageGallery — responsive masonry-style grid showing all project images.
+ * Falls back to gradient collage if no images are available.
+ */
+const { images = [], gradientClass = '', title = '' } = Astro.props;
+const hasImages = images.length > 0;
+---
+
+{hasImages ? (
+  <div class="image-gallery">
+    {images.map((src, i) => (
+      <div class={`gallery-item animate-up rounded overflow-hidden`} data-delay={String(Math.min(i + 1, 4))}>
+        <img
+          src={src}
+          alt={`${title} — project image ${i + 1}`}
+          class="w-full h-auto"
+          style="display:block;"
+          loading="lazy"
+        />
+      </div>
+    ))}
+  </div>
+) : (
+  <div class="image-gallery">
+    <div class={`${gradientClass} rounded`} style="aspect-ratio:2.4/1;grid-column:1/-1;"></div>
+    <div class={`${gradientClass} rounded`} style="aspect-ratio:3/4;opacity:0.85;"></div>
+    <div class={`${gradientClass} rounded`} style="aspect-ratio:3/4;opacity:0.7;"></div>
+    <div class={`${gradientClass} rounded`} style="aspect-ratio:3/4;opacity:0.55;"></div>
+  </div>
+)}
+
+<style>
+  .image-gallery {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  /* First image spans full width as hero */
+  .gallery-item:first-child {
+    grid-column: 1 / -1;
+  }
+  /* Every 5th image (after the first) also spans full width for rhythm */
+  .gallery-item:nth-child(5n+1):not(:first-child) {
+    grid-column: 1 / -1;
+  }
+  @media (max-width: 640px) {
+    .image-gallery {
+      grid-template-columns: 1fr;
+    }
+    .gallery-item:first-child,
+    .gallery-item:nth-child(5n+1) {
+      grid-column: 1;
+    }
+  }
+</style>

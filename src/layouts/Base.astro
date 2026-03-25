@@ -1,26 +1,39 @@
 ---
-const { title = 'Sean Morse — Design Director' } = Astro.props;
+import { ViewTransitions } from 'astro:transitions';
+
+const {
+  title = 'Sean Morse — Design Director',
+  description = 'Brand development and packaging design for CPG brands. Portland, OR.',
+  ogImage = '/images/og-image.jpg',
+  ogUrl = '',
+  bodyClass = '',
+} = Astro.props;
+
+/* Build absolute OG image URL */
+const siteBase = 'https://sean-morse-portfolio.pages.dev';
+const absoluteOgImage = ogImage.startsWith('http') ? ogImage : siteBase + ogImage;
+const absoluteOgUrl = ogUrl || siteBase + Astro.url.pathname;
 ---
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Brand development and packaging design for CPG brands. Portland, OR." />
+  <meta name="description" content={description} />
   <title>{title}</title>
 
   <!-- Open Graph / iMessage Preview -->
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="Sean Morse — Design Director" />
-  <meta property="og:description" content="Brand development and packaging design for CPG brands. Portland, OR." />
-  <meta property="og:image" content="https://sean-morse-portfolio-v2.pages.dev/images/og-image.jpg" />
-  <meta property="og:url" content="https://sean-morse-portfolio-v2.pages.dev" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:image" content={absoluteOgImage} />
+  <meta property="og:url" content={absoluteOgUrl} />
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Sean Morse — Design Director" />
-  <meta name="twitter:description" content="Brand development and packaging design for CPG brands. Portland, OR." />
-  <meta name="twitter:image" content="https://sean-morse-portfolio-v2.pages.dev/images/og-image.jpg" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={absoluteOgImage} />
 
   <!-- Google Fonts: Cormorant Garamond + DM Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -34,12 +47,19 @@ const { title = 'Sean Morse — Design Director' } = Astro.props;
   <style is:global>
     @import '../styles/global.css';
   </style>
-</head>
-<body>
-  <slot />
 
-  <!-- Scripts -->
-  <script is:inline src="/scripts/router.js"></script>
+  <!-- View Transitions for smooth page navigation -->
+  <ViewTransitions />
+</head>
+<body class={bodyClass}>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <main id="main-content">
+    <slot />
+  </main>
+
+  <!-- Animations (scroll-triggered entrance + hero) -->
   <script is:inline src="/scripts/animations.js"></script>
+  <!-- Hero showcase (auto-cycling bg + cursor trail + cursor glow) -->
+  <script is:inline src="/scripts/hero-showcase.js"></script>
 </body>
 </html>

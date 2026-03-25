@@ -1,13 +1,18 @@
 ---
 const { project, cardClass } = Astro.props;
 const isComingSoon = project.comingSoon;
+const isLocked = project.passwordProtected;
 const hasImage = !!project.image;
+const isClickable = !isComingSoon && !isLocked && project.problem;
+const href = isClickable ? `/project/${project.slug}` : undefined;
+const Tag = isClickable ? 'a' : 'div';
 ---
 <!-- Single project card with gradient, overlay, and hover states -->
-<div
-  class={`project-card group relative overflow-hidden rounded ${cardClass} ${isComingSoon ? 'cursor-default' : 'cursor-pointer'}`}
+<a
+  href={href}
+  class={`project-card group relative overflow-hidden rounded block ${cardClass} ${isClickable ? 'cursor-pointer' : 'cursor-default'}`}
+  style="text-decoration: none; color: inherit;"
   data-slug={project.slug}
-  data-case-study={project.caseStudy}
   data-coming-soon={isComingSoon || false}
 >
   <!-- Background: image if available, gradient fallback -->
@@ -18,14 +23,25 @@ const hasImage = !!project.image;
       class="project-card-bg w-full h-full transition-transform duration-400"
       style={`object-fit: cover; object-position: ${project.imagePosition || 'center'}; transition-timing-function: var(--ease-out);`}
       loading="lazy"
+      transition:name={`project-bg-${project.slug}`}
     />
   ) : (
-    <div class={`project-card-bg w-full h-full transition-transform duration-400 ${project.gradientClass}`}
-      style="transition-timing-function: var(--ease-out);"></div>
+    <div
+      class={`project-card-bg w-full h-full transition-transform duration-400 ${project.gradientClass}`}
+      style="transition-timing-function: var(--ease-out);"
+      transition:name={`project-bg-${project.slug}`}
+    ></div>
   )}
 
   <!-- Overlay (always visible) -->
   <div class="absolute inset-0" style={`background: linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 55%);${isComingSoon ? 'opacity: 0.5;' : ''}`}>
+    <!-- Lock indicator for password-protected projects -->
+    {isLocked && (
+      <div class="absolute top-4 right-4" style="font-family: var(--font-body); font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(255,255,255,0.5);">
+        Available upon request
+      </div>
+    )}
+
     <!-- Bottom-left info stack -->
     <div class="absolute bottom-5 left-5 right-5">
       <!-- Descriptor (shows on hover, positioned above the title) -->
@@ -45,7 +61,7 @@ const hasImage = !!project.image;
       </div>
     </div>
   </div>
-</div>
+</a>
 
 <style>
   .project-card:not([data-coming-soon="true"]):hover {

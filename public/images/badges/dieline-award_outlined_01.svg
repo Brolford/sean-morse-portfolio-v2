@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" color="#C4541A" fill="none" stroke="#C4541A" stroke-linecap="round" stroke-linejoin="round">
+  <title>Classic Laurel Wreath Dieline Award Seal</title>
+  
+  <!-- Outer Badge -->
+  <circle cx="12" cy="12" r="11" stroke-width="2" />
+  
+  <!-- Laurel Wreath Stems -->
+  <g stroke-width="1.5">
+    <path d="M 12 21.5 C 5 21 2 15 3 9 C 3.5 6 5 4 7 3" />
+    <path d="M 12 21.5 C 19 21 22 15 21 9 C 20.5 6 19 4 17 3" />
+    
+    <!-- Left Leaves -->
+    <path d="M 8.5 19.5 L 6 18 M 5 17 L 3 15 M 3 13 L 1.5 11 M 3.2 9 L 2 7 M 4.5 5.5 L 4 3.5" />
+    
+    <!-- Right Leaves -->
+    <path d="M 15.5 19.5 L 18 18 M 19 17 L 21 15 M 21 13 L 22.5 11 M 20.8 9 L 22 7 M 19.5 5.5 L 20 3.5" />
+  </g>
+
+  <!-- #1 -->
+  <g stroke-width="1">
+    <path d="M 10.5 10.5 l -1 4 M 12.5 10.5 l -1 4 M 9 11.5 h 3.5 M 8.5 13.5 h 3.5" />
+    <path d="M 14.5 11.5 l 1.5 -1 v 4.5 M 14.5 15 h 3" />
+  </g>
+
+  <!-- Text: DIELINE AWARD -->
+  <g stroke-width="0.5">
+    <!-- DIELINE -->
+    <path d="M 6 7.5 v -2 h 1 a 1 1 0 0 1 0 2 Z" />
+    <path d="M 8 7.5 v -2" />
+    <path d="M 10 7.5 h -1 v -2 h 1 M 9 6.5 h 0.8" />
+    <path d="M 11 5.5 v 2 h 1" />
+    <path d="M 13 7.5 v -2" />
+    <path d="M 14 7.5 v -2 l 1.5 2 v -2" />
+    <path d="M 17.5 7.5 h -1 v -2 h 1 M 16.5 6.5 h 0.8" />
+    
+    <!-- AWARD -->
+    <path d="M 6 18.5 l 1 -2 l 1 2 M 6.5 17.5 h 1" />
+    <path d="M 9 16.5 l 0.5 2 l 0.5 -1.5 l 0.5 1.5 l 0.5 -2" />
+    <path d="M 12 18.5 l 1 -2 l 1 2 M 12.5 17.5 h 1" />
+    <path d="M 15.5 18.5 v -2 h 0.8 a 0.5 0.5 0 0 1 0 1 h -0.8 l 1 1" />
+    <path d="M 17.5 18.5 v -2 h 0.8 a 1 1 0 0 1 0 2 Z" />
+  </g>
+</svg>

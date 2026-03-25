@@ -1,0 +1,21 @@
+---
+/**
+ * Accordion — expandable section with +/× toggle.
+ * Used on project detail pages for Problem/Solution/Results.
+ */
+const { label = 'Section', content = '' } = Astro.props;
+---
+
+{content && (
+  <div class="accordion-item" style="border-top: 1px solid var(--color-divider); padding: 24px 0;">
+    <button class="accordion-trigger flex justify-between items-center w-full bg-transparent border-none cursor-pointer text-left" style="font-family: var(--font-body); font-weight: 500; font-size: 16px; color: var(--color-text);">
+      {label}
+      <span class="accordion-icon transition-transform duration-200" style="font-size: 18px; color: var(--color-muted);">+</span>
+    </button>
+    <div class="accordion-content overflow-hidden" style="max-height: 0; opacity: 0; transition: max-height 300ms var(--ease-out), opacity 200ms ease;">
+      <p class="pt-4" style="font-family: var(--font-body); font-weight: 300; font-size: 15px; line-height: 1.7; color: var(--color-muted);">
+        {content}
+      </p>
+    </div>
+  </div>
+)}

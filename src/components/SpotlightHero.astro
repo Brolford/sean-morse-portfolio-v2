@@ -101,7 +101,7 @@ const featured = projects
       if (e.target.closest('.spotlight-dot')) return;
       var slide = slides[current];
       if (slide && slide.getAttribute('data-case-study') === 'true') {
-        window.location.hash = '#/project/' + slide.getAttribute('data-slug');
+        window.location.href = '/project/' + slide.getAttribute('data-slug');
       }
     });
   }

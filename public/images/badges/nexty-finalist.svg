@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <!-- Outer ring -->
+  <circle cx="100" cy="100" r="95" stroke="#C4541A" stroke-width="1.5"/>
+  <circle cx="100" cy="100" r="88" stroke="#C4541A" stroke-width="0.5"/>
+
+  <!-- Star accent at top -->
+  <g fill="#C4541A" opacity="0.5">
+    <polygon points="100,14 102,20 108,20 103,24 105,30 100,26 95,30 97,24 92,20 98,20"/>
+  </g>
+
+  <!-- Decorative dots -->
+  <g fill="#C4541A" opacity="0.3">
+    <circle cx="70" cy="11" r="1.2"/>
+    <circle cx="130" cy="11" r="1.2"/>
+    <circle cx="43" cy="23" r="1.2"/>
+    <circle cx="157" cy="23" r="1.2"/>
+    <circle cx="23" cy="43" r="1.2"/>
+    <circle cx="177" cy="43" r="1.2"/>
+    <circle cx="11" cy="70" r="1.2"/>
+    <circle cx="189" cy="70" r="1.2"/>
+    <circle cx="8" cy="100" r="1.2"/>
+    <circle cx="192" cy="100" r="1.2"/>
+    <circle cx="11" cy="130" r="1.2"/>
+    <circle cx="189" cy="130" r="1.2"/>
+    <circle cx="23" cy="157" r="1.2"/>
+    <circle cx="177" cy="157" r="1.2"/>
+    <circle cx="43" cy="177" r="1.2"/>
+    <circle cx="157" cy="177" r="1.2"/>
+    <circle cx="70" cy="189" r="1.2"/>
+    <circle cx="130" cy="189" r="1.2"/>
+  </g>
+
+  <!-- Left laurel branch -->
+  <g stroke="#C4541A" stroke-width="0.8" fill="none" opacity="0.5">
+    <path d="M 60 160 Q 45 140 40 115 Q 38 100 42 85 Q 45 72 55 60"/>
+    <path d="M 42 85 Q 32 82 28 75" />
+    <path d="M 45 100 Q 34 98 28 92" />
+    <path d="M 48 115 Q 38 115 32 110" />
+    <path d="M 52 130 Q 42 132 36 128" />
+    <path d="M 56 145 Q 47 148 42 144" />
+    <path d="M 50 72 Q 40 68 36 60" />
+  </g>
+
+  <!-- Right laurel branch -->
+  <g stroke="#C4541A" stroke-width="0.8" fill="none" opacity="0.5">
+    <path d="M 140 160 Q 155 140 160 115 Q 162 100 158 85 Q 155 72 145 60"/>
+    <path d="M 158 85 Q 168 82 172 75" />
+    <path d="M 155 100 Q 166 98 172 92" />
+    <path d="M 152 115 Q 162 115 168 110" />
+    <path d="M 148 130 Q 158 132 164 128" />
+    <path d="M 144 145 Q 153 148 158 144" />
+    <path d="M 150 72 Q 160 68 164 60" />
+  </g>
+
+  <!-- NEXTY -->
+  <text x="100" y="78" text-anchor="middle" font-family="Georgia, serif" font-weight="400" font-size="13" fill="#C4541A" letter-spacing="4">NEXTY</text>
+
+  <!-- FINALIST -->
+  <text x="100" y="100" text-anchor="middle" font-family="Georgia, serif" font-weight="400" font-size="22" fill="#C4541A" letter-spacing="2">FINALIST</text>
+
+  <!-- Divider -->
+  <line x1="65" y1="110" x2="135" y2="110" stroke="#C4541A" stroke-width="0.5" opacity="0.4"/>
+
+  <!-- Best New Organic Food -->
+  <text x="100" y="126" text-anchor="middle" font-family="Georgia, serif" font-weight="400" font-size="9" fill="#C4541A" opacity="0.7" letter-spacing="1">BEST NEW ORGANIC FOOD</text>
+
+  <!-- & Best New Dessert -->
+  <text x="100" y="140" text-anchor="middle" font-family="Georgia, serif" font-weight="400" font-size="9" fill="#C4541A" opacity="0.7" letter-spacing="1">BEST NEW DESSERT</text>
+
+  <!-- Expo West 2022 -->
+  <text x="100" y="158" text-anchor="middle" font-family="Georgia, serif" font-weight="400" font-size="8" fill="#C4541A" opacity="0.4" letter-spacing="1.5">EXPO WEST 2022</text>
+</svg>

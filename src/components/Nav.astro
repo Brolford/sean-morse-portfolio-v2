@@ -1,15 +1,22 @@
+---
+/* Build-time active page detection */
+const currentPath = Astro.url.pathname;
+const isHome = currentPath === '/';
+const isWork = currentPath === '/work' || currentPath === '/work/';
+const isAbout = currentPath === '/about' || currentPath === '/about/';
+---
 <!-- Fixed navigation bar with scroll behavior and mobile hamburger -->
 <nav id="main-nav" class="fixed top-0 left-0 right-0 z-[100] h-16 flex items-center justify-between transition-all duration-300" style="padding: 0 var(--space-fluid);">
   <!-- Logo -->
-  <a href="#/" class="nav-logo" style="font-family: var(--font-display); font-weight: 300; font-size: 18px; color: var(--color-text);">
+  <a href="/" class="nav-logo" style="font-family: var(--font-display); font-weight: 300; font-size: 18px; color: var(--color-text);">
     Sean Morse
   </a>
 
   <!-- Desktop Links -->
   <div class="hidden md:flex items-center gap-8">
-    <a href="#/" class="nav-link" style="font-family: var(--font-body); font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-text); transition: color 200ms;">Home</a>
-    <a href="#/work" class="nav-link" style="font-family: var(--font-body); font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-text); transition: color 200ms;">Archive</a>
-    <a href="#/about" class="nav-link" style="font-family: var(--font-body); font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-text); transition: color 200ms;">About</a>
+    <a href="/" class="nav-link" style={`font-family: var(--font-body); font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; transition: color 200ms; color: ${isHome ? 'var(--color-accent)' : 'var(--color-text)'};`}>Home</a>
+    <a href="/work" class="nav-link" style={`font-family: var(--font-body); font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; transition: color 200ms; color: ${isWork ? 'var(--color-accent)' : 'var(--color-text)'};`}>Archive</a>
+    <a href="/about" class="nav-link" style={`font-family: var(--font-body); font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; transition: color 200ms; color: ${isAbout ? 'var(--color-accent)' : 'var(--color-text)'};`}>About</a>
     <button id="nav-contact-btn" class="nav-link" style="font-family: var(--font-body); font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-text); background: none; border: none; transition: color 200ms;">Contact</button>
   </div>
 
@@ -25,20 +32,20 @@
 <div id="mobile-overlay" class="fixed inset-0 z-[200] flex flex-col items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300" style="background: var(--color-bg);">
   <button id="mobile-close-btn" class="absolute top-5 right-5 w-10 h-10 flex items-center justify-center bg-transparent border-none" style="font-family: var(--font-body); font-size: 24px; color: var(--color-muted);" aria-label="Close menu">×</button>
 
-  <a href="#/" class="mobile-nav-link opacity-0 translate-y-4 transition-all duration-300" style="font-family: var(--font-display); font-weight: 300; font-style: italic; font-size: 48px; color: var(--color-text); margin-bottom: 16px;">Home</a>
-  <a href="#/work" class="mobile-nav-link opacity-0 translate-y-4 transition-all duration-300" style="font-family: var(--font-display); font-weight: 300; font-style: italic; font-size: 48px; color: var(--color-text); margin-bottom: 16px;">Work</a>
-  <a href="#/about" class="mobile-nav-link opacity-0 translate-y-4 transition-all duration-300" style="font-family: var(--font-display); font-weight: 300; font-style: italic; font-size: 48px; color: var(--color-text); margin-bottom: 16px;">About</a>
+  <a href="/" class="mobile-nav-link opacity-0 translate-y-4 transition-all duration-300" style="font-family: var(--font-display); font-weight: 300; font-style: italic; font-size: 48px; color: var(--color-text); margin-bottom: 16px;">Home</a>
+  <a href="/work" class="mobile-nav-link opacity-0 translate-y-4 transition-all duration-300" style="font-family: var(--font-display); font-weight: 300; font-style: italic; font-size: 48px; color: var(--color-text); margin-bottom: 16px;">Work</a>
+  <a href="/about" class="mobile-nav-link opacity-0 translate-y-4 transition-all duration-300" style="font-family: var(--font-display); font-weight: 300; font-style: italic; font-size: 48px; color: var(--color-text); margin-bottom: 16px;">About</a>
   <button class="mobile-nav-link mobile-contact-btn opacity-0 translate-y-4 transition-all duration-300 bg-transparent border-none cursor-pointer" style="font-family: var(--font-display); font-weight: 300; font-style: italic; font-size: 48px; color: var(--color-text);">Contact</button>
 </div>
 
 <script is:inline>
 (function() {
   const nav = document.getElementById('main-nav');
+  if (!nav) return;
   const hamburger = document.getElementById('hamburger-btn');
   const overlay = document.getElementById('mobile-overlay');
   const closeBtn = document.getElementById('mobile-close-btn');
   const mobileLinks = overlay.querySelectorAll('.mobile-nav-link');
-  const navLinks = document.querySelectorAll('.nav-link');
   const contactBtn = document.getElementById('nav-contact-btn');
   const mobileContactBtn = overlay.querySelector('.mobile-contact-btn');
 
@@ -63,22 +70,6 @@
   }
   window.addEventListener('scroll', checkScroll, { passive: true });
   checkScroll();
-
-  /* Active page highlight */
-  function updateActiveNav() {
-    const hash = window.location.hash || '#/';
-    navLinks.forEach(function(link) {
-      var href = link.getAttribute('href');
-      if (!href) return;
-      if (href === hash || (hash === '#/' && href === '#/')) {
-        link.style.color = 'var(--color-accent)';
-      } else {
-        link.style.color = 'var(--color-text)';
-      }
-    });
-  }
-  window.addEventListener('hashchange', updateActiveNav);
-  updateActiveNav();
 
   /* Mobile overlay open/close */
   function openMobile() {

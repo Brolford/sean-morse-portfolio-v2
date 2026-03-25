@@ -1,0 +1,124 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import ContactModal from '../components/ContactModal.astro';
+import { projects, archiveProjects } from '../data/projects.js';
+
+/* Featured projects (exclude coming-soon placeholder) */
+const featured = projects.filter(p => !p.comingSoon);
+---
+<Base title="Archive — Sean Morse" description="Selected and archive work by Sean Morse — brand development and packaging design for CPG brands.">
+  <Nav />
+
+  <section class="mx-auto pt-32 pb-24 px-6" style="max-width: 1200px;">
+    <h1 class="animate-up mb-16" style="font-family: var(--font-display); font-weight: 300; font-size: clamp(48px,7vw,100px); color: var(--color-text);">Archive</h1>
+
+    <!-- Featured Projects -->
+    <h2 class="animate-up mb-6" style="font-family: var(--font-body); font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--color-muted);">Featured Work</h2>
+
+    <div class="archive-list flex flex-col gap-4 mb-16">
+      {featured.map((project, i) => {
+        const hasDetailPage = !project.passwordProtected && !project.comingSoon && project.problem;
+        return (
+          <a
+            href={hasDetailPage ? `/project/${project.slug}` : undefined}
+            class={`archive-row animate-up py-6 transition-colors duration-200 rounded ${hasDetailPage ? 'cursor-pointer' : 'cursor-default'}`}
+            style="border-bottom: 1px solid var(--color-divider); text-decoration: none; color: inherit;"
+            data-delay={String(Math.min(i + 1, 8))}
+          >
+            {/* Index */}
+            <span class="self-start pt-1" style="font-family: var(--font-display); font-weight: 300; font-style: italic; font-size: 14px; color: var(--color-muted);">
+              {String(i + 1).padStart(2, '0')}
+            </span>
+            {/* Thumbnail — real image or gradient fallback */}
+            <div class={`archive-thumb shrink-0 rounded overflow-hidden ${!project.image ? project.gradientClass : ''}`} style="width: 160px; height: 106px;">
+              {project.image && (
+                <img src={project.image} alt={project.title} class="w-full h-full" style="object-fit:cover;" loading="lazy" />
+              )}
+            </div>
+            {/* Name + Description */}
+            <div class="min-w-0">
+              <div class="flex items-baseline gap-3 flex-wrap">
+                <span class="archive-name transition-colors duration-250" style="font-family: var(--font-display); font-weight: 300; font-style: italic; font-size: clamp(22px,2.5vw,36px); color: var(--color-text);">
+                  {project.title}
+                </span>
+                <span class="hidden sm:inline" style="font-family: var(--font-body); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-muted);">
+                  {project.category}
+                </span>
+                {project.passwordProtected && (
+                  <span style="font-family: var(--font-body); font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-muted); opacity: 0.6;">🔒</span>
+                )}
+              </div>
+              {project.description && (
+                <p class="mt-2" style="font-family: var(--font-body); font-weight: 300; font-size: 15px; line-height: 1.6; color: var(--color-muted); max-width: 560px;">
+                  {project.description}
+                </p>
+              )}
+            </div>
+            {/* Year */}
+            <span class="shrink-0 self-start pt-2" style="font-family: var(--font-body); font-size: 13px; color: var(--color-muted);">
+              {project.year}
+            </span>
+          </a>
+        );
+      })}
+    </div>
+
+    <!-- Archive Projects -->
+    {archiveProjects.length > 0 && (
+      <>
+        <h2 class="animate-up mb-6" style="font-family: var(--font-body); font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--color-muted);">Archive</h2>
+        <div class="archive-list flex flex-col gap-4">
+          {archiveProjects.map((project, i) => (
+            <div
+              class="archive-row animate-up py-4 cursor-default"
+              style="border-bottom: 1px solid var(--color-divider);"
+              data-delay={String(Math.min(i + 1, 8))}
+            >
+              <span class="self-start pt-1" style="font-family: var(--font-display); font-weight: 300; font-style: italic; font-size: 14px; color: var(--color-muted);">
+                {String(i + 1 + featured.length).padStart(2, '0')}
+              </span>
+              <div class="archive-thumb shrink-0 rounded overflow-hidden gradient-archive" style="width: 160px; height: 106px;"></div>
+              <div class="min-w-0">
+                <span class="archive-name" style="font-family: var(--font-display); font-weight: 300; font-style: italic; font-size: clamp(22px,2.5vw,36px); color: var(--color-text);">
+                  {project.title}
+                </span>
+                {project.category && (
+                  <span class="hidden sm:inline ml-3" style="font-family: var(--font-body); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-muted);">
+                    {project.category}
+                  </span>
+                )}
+              </div>
+              <span class="shrink-0 self-start pt-2" style="font-family: var(--font-body); font-size: 13px; color: var(--color-muted);">
+                {project.year}
+              </span>
+            </div>
+          ))}
+        </div>
+      </>
+    )}
+  </section>
+
+  <Footer />
+  <ContactModal />
+</Base>
+
+<script is:inline>
+(function() {
+  document.querySelectorAll('.archive-row[href]').forEach(function(row) {
+    if (row.dataset.hoverWired) return;
+    row.dataset.hoverWired = 'true';
+    row.addEventListener('mouseenter', function() {
+      this.style.background = 'rgba(15,15,15,0.025)';
+      var n = this.querySelector('.archive-name');
+      if (n) n.style.color = 'var(--color-accent)';
+    });
+    row.addEventListener('mouseleave', function() {
+      this.style.background = 'transparent';
+      var n = this.querySelector('.archive-name');
+      if (n) n.style.color = 'var(--color-text)';
+    });
+  });
+})();
+</script>

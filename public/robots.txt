@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://sean-morse-portfolio.pages.dev/sitemap-index.xml

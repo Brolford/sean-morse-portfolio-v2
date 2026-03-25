@@ -1,0 +1,180 @@
+---
+import Base from '../../layouts/Base.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import ContactModal from '../../components/ContactModal.astro';
+import ImageGallery from '../../components/ImageGallery.astro';
+import Accordion from '../../components/Accordion.astro';
+import AwardsBar from '../../components/AwardsBar.astro';
+import { projects } from '../../data/projects.js';
+
+/**
+ * Generate one static page per project that has case study content.
+ * Excludes: comingSoon, passwordProtected, and projects with no problem/solution copy.
+ */
+export function getStaticPaths() {
+  return projects
+    .filter(p => !p.comingSoon && !p.passwordProtected && p.problem)
+    .map(p => ({
+      params: { slug: p.slug },
+      props: { project: p },
+    }));
+}
+
+const { project } = Astro.props;
+
+/* Labels for accordion sections — some projects use Situation/Action/Outcome */
+const problemLabel = project.problemLabel || 'Problem';
+const solutionLabel = project.solutionLabel || 'Solution';
+const resultsLabel = project.resultsLabel || 'Results';
+---
+<Base
+  title={`${project.title} — Sean Morse`}
+  description={project.description}
+>
+  <Nav />
+
+  <!-- Full-width hero — real image if available, gradient fallback -->
+  <div
+    class={`w-full ${!project.image ? project.gradientClass : ''} overflow-hidden`}
+    style="height: 50vh; min-height: 320px; max-height: 560px;"
+    transition:name={`project-bg-${project.slug}`}
+  >
+    {project.image && (
+      <img
+        src={project.image}
+        alt={project.title}
+        class="w-full h-full"
+        style="object-fit: cover;"
+      />
+    )}
+  </div>
+
+  <section class="mx-auto px-6" style="max-width: 1100px; padding-top: 48px; padding-bottom: 96px;">
+    <!-- Back link -->
+    <a href="/work" class="inline-block mb-10" style="font-family: var(--font-body); font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-muted);">← Back to Archive</a>
+
+    <!-- Two-column layout: content left, sidebar right -->
+    <div class="grid grid-cols-1 md:grid-cols-[1fr_320px] gap-x-16 gap-y-12">
+
+      <!-- LEFT COLUMN -->
+      <div>
+        <!-- Tagline -->
+        <h1
+          style="font-family: var(--font-display); font-weight: 300; font-style: italic; font-size: clamp(28px,3.5vw,44px); line-height: 1.2; color: var(--color-text); margin-bottom: 32px;"
+          transition:name={`project-title-${project.slug}`}
+        >
+          {project.tagline || project.title}
+        </h1>
+
+        <!-- Intro (brand voice, if available) -->
+        {project.intro && (
+          <p style="font-family: var(--font-body); font-weight: 300; font-size: 17px; line-height: 1.8; color: var(--color-text); margin-bottom: 32px; white-space: pre-line;">
+            {project.intro}
+          </p>
+        )}
+
+        <!-- Description -->
+        <p style="font-family: var(--font-body); font-weight: 300; font-size: 17px; line-height: 1.8; color: var(--color-text); margin-bottom: 48px;">
+          {project.description}
+        </p>
+
+        <!-- Awards & Impact -->
+        <AwardsBar awards={project.awards || []} />
+
+        <!-- Accordion sections -->
+        <div class="project-accordion">
+          <Accordion label={problemLabel} content={project.problem} />
+          <Accordion label={solutionLabel} content={project.solution} />
+          <div style="border-bottom: 1px solid var(--color-divider);">
+            <Accordion label={resultsLabel} content={project.results} />
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT SIDEBAR -->
+      <div class="flex flex-col gap-8 md:pt-2">
+        {project.client && (
+          <div style="border-bottom: 1px solid var(--color-divider); padding-bottom: 20px;">
+            <span style="font-family: var(--font-body); font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--color-accent); display: block; margin-bottom: 6px;">Client</span>
+            <span style="font-family: var(--font-body); font-weight: 400; font-size: 15px; color: var(--color-text);">{project.client}</span>
+          </div>
+        )}
+
+        {project.agency && (
+          <div style="border-bottom: 1px solid var(--color-divider); padding-bottom: 20px;">
+            <span style="font-family: var(--font-body); font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--color-accent); display: block; margin-bottom: 6px;">Agency</span>
+            <span style="font-family: var(--font-body); font-weight: 400; font-size: 15px; color: var(--color-text);">{project.agency}</span>
+          </div>
+        )}
+
+        {project.services && (
+          <div style="border-bottom: 1px solid var(--color-divider); padding-bottom: 20px;">
+            <span style="font-family: var(--font-body); font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--color-accent); display: block; margin-bottom: 6px;">Services</span>
+            <span style="font-family: var(--font-body); font-weight: 400; font-size: 15px; color: var(--color-text);">{project.services}</span>
+          </div>
+        )}
+
+        {project.credits && project.credits.length > 0 && (
+          <div>
+            <span style="font-family: var(--font-body); font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--color-accent); display: block; margin-bottom: 6px;">Credits</span>
+            <div class="flex flex-col gap-2">
+              {project.credits.map(c => (
+                <div>
+                  <span style="font-family: var(--font-body); font-weight: 400; font-size: 15px; color: var(--color-text);">{c.name}</span>
+                  <span style="font-family: var(--font-body); font-size: 13px; color: var(--color-muted);"> — {c.role}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+
+    <!-- Project image gallery -->
+    <div class="mt-16 mb-12">
+      <ImageGallery
+        images={project.images || []}
+        gradientClass={project.gradientClass}
+        title={project.title}
+      />
+    </div>
+
+    <!-- CTA -->
+    <div class="text-center" style="padding: 48px 0; border-top: 1px solid var(--color-divider);">
+      <p style="font-family: var(--font-body); font-size: 17px; color: var(--color-muted); margin-bottom: 8px;">Interested in working together?</p>
+      <button class="cta-link bg-transparent border-none cursor-pointer" style="font-family: var(--font-body); font-weight: 400; font-size: 15px; color: var(--color-text);" onclick="if(typeof openContactModal==='function')openContactModal()">
+        Get in touch →
+      </button>
+    </div>
+  </section>
+
+  <Footer />
+  <ContactModal />
+</Base>
+
+<script is:inline>
+(function() {
+  if (window.__accordionWired) return;
+  window.__accordionWired = true;
+
+  document.querySelectorAll('.accordion-trigger').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var item = btn.closest('.accordion-item');
+      var content = item.querySelector('.accordion-content');
+      var icon = item.querySelector('.accordion-icon');
+      var isOpen = content.style.maxHeight !== '0px' && content.style.maxHeight !== '0' && content.style.maxHeight !== '';
+
+      if (isOpen) {
+        content.style.maxHeight = '0';
+        content.style.opacity = '0';
+        icon.textContent = '+';
+      } else {
+        content.style.maxHeight = content.scrollHeight + 'px';
+        content.style.opacity = '1';
+        icon.textContent = '×';
+      }
+    });
+  });
+})();
+</script>

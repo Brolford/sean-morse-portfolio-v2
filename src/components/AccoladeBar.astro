@@ -1,0 +1,48 @@
+---
+/**
+ * AccoladeBar — full-width dark interstitial that spotlights a key stat or award.
+ * Features: noise texture, accent glow behind stat, project image bleeding in from the edge.
+ */
+const { stat, label, detail = '', image = '', imagePosition = 'right' } = Astro.props;
+const hasImage = !!image;
+---
+<div class="accolade-bar animate-up w-full relative overflow-hidden" style="background: var(--color-block); padding: 56px 24px; margin: 12px 0;">
+
+  <!-- Noise texture overlay -->
+  <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=%270 0 256 256%27 xmlns=%27http://www.w3.org/2000/svg%27%3E%3Cfilter id=%27noise%27%3E%3CfeTurbulence type=%27fractalNoise%27 baseFrequency=%270.9%27 numOctaves=%274%27 stitchTiles=%27stitch%27/%3E%3C/filter%3E%3Crect width=%27100%25%27 height=%27100%25%27 filter=%27url(%23noise)%27 opacity=%270.04%27/%3E%3C/svg%3E'); opacity: 0.5; pointer-events: none;"></div>
+
+  <!-- Accent glow behind the stat number -->
+  <div class="absolute" style={`top: 50%; ${imagePosition === 'right' ? 'left: 15%' : 'left: 55%'}; transform: translate(-50%, -50%); width: 300px; height: 200px; background: radial-gradient(circle, rgba(196, 84, 26, 0.15) 0%, transparent 70%); pointer-events: none;`}></div>
+
+  <!-- Project image bleeding in from edge -->
+  {hasImage && (
+    <div class={`absolute top-0 bottom-0 ${imagePosition === 'right' ? 'right-0' : 'left-0'}`} style="width: 35%; max-width: 400px; pointer-events: none;">
+      <div class="w-full h-full relative overflow-hidden">
+        <img
+          src={image}
+          alt=""
+          class="w-full h-full"
+          style={`object-fit: cover; opacity: 0.12; ${imagePosition === 'right' ? 'mask-image: linear-gradient(to right, transparent 0%, black 40%); -webkit-mask-image: linear-gradient(to right, transparent 0%, black 40%);' : 'mask-image: linear-gradient(to left, transparent 0%, black 40%); -webkit-mask-image: linear-gradient(to left, transparent 0%, black 40%);'}`}
+          loading="lazy"
+        />
+      </div>
+    </div>
+  )}
+
+  <!-- Content -->
+  <div class="relative z-10 mx-auto flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8" style="max-width: 900px;">
+    <span class="accolade-stat" style="font-family: var(--font-display); font-weight: 300; font-style: italic; font-size: clamp(40px, 6vw, 64px); color: var(--color-accent); white-space: nowrap; text-shadow: 0 0 40px rgba(196, 84, 26, 0.3);">
+      {stat}
+    </span>
+    <div class="text-center sm:text-left">
+      <span style="font-family: var(--font-body); font-weight: 400; font-size: 16px; color: white; display: block;">
+        {label}
+      </span>
+      {detail && (
+        <span style="font-family: var(--font-body); font-weight: 300; font-size: 13px; color: rgba(255,255,255,0.5); display: block; margin-top: 4px;">
+          {detail}
+        </span>
+      )}
+    </div>
+  </div>
+</div>
